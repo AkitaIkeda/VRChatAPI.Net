@@ -19,6 +19,24 @@
 				"reveal": "silent"
 			},
 			"problemMatcher": "$msCompile"
-		}
+		},
+		{
+			"label": "pack release with source",
+			"command": "dotnet",
+			"type": "shell",
+			"args": [
+				"pack",
+				"./VRChatAPI/",
+				"-c",
+				"Release",
+				"--include-source",
+				"--output",
+				"nupkgs",
+			],
+			"group": "build",
+			"presentation": {
+				"reveal": "silent"
+			},
+		},
 	]
 }
