@@ -51,20 +51,14 @@ namespace VRChatAPI.Endpoints
 			Logger.LogDebug("Getting System Time of VRChat server");
 			var response = await Global.httpClient.GetAsync("time");
 			var t = await response.Content.ReadAsStringAsync();
-			return DateTime.ParseExact(t, "yyyy-MM-ddThh:mm:ss+00:00", null);
+			return DateTime.Parse(t);
 		}
-		/// <summary>
-		/// Verify the auth cookie
-		/// </summary>
-		/// <param name="ok">Is verified</param>
-		/// <param name="token">auth token</param>
-		/// <returns>Tuple of <paramref name="ok"/> and <paramref name="token"/></returns>
-		/// <exception cref="UnauthorizedRequestException"/>
-		public async Task<(bool ok, string token)> VerifyAuth()
+
+		public async Task<(bool ok, string serverName, string buildVersionTag)> CheckAPIHealth()
 		{
-			Logger.LogDebug("Verifying Auth");
-			var response = await Global.httpClient.GetAsync("auth");
-			return await Utils.UtilFunctions.ParseResponse<(bool ok, string token)>(response);
+			Logger.LogDebug("Check API Health");
+			var response = await Global.httpClient.GetAsync("health");
+			return await Utils.UtilFunctions.ParseResponse<(bool ok, string serverName, string buildVersionTag)>(response);
 		}
 	}
 }

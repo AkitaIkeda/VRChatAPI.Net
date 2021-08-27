@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Converters;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 
 #pragma warning disable IDE1006
 
@@ -16,13 +17,14 @@ namespace VRChatAPI.Objects
 		block,
 		unblock,
 		hideAvatar,
-		showAvatar
+		showAvatar,
 	}
 
 	public class PlayerModeration
 	{
 		private static ILogger Logger => Global.LoggerFactory.CreateLogger<PlayerModeration>();
 
+		// TODO: Implement PlayerModerationId
 		public string id { get; set; }
 		public ModerationType type { get; set; }
 		public string sourceUserId { get; set; }
@@ -34,11 +36,25 @@ namespace VRChatAPI.Objects
 		/// <summary>
 		/// Delete moderation
 		/// </summary>
-		/// <exception cref="UnauthorizedRequestException"/>
-		public async Task Delete()
+		/// <returns>Response message</returns>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
+		public async Task<JObject> Delete()
 		{
 			Logger.LogDebug("Delete moderation {id} of {targetUserId}", id, targetUserId);
-			await Global.httpClient.DeleteAsync($"user/{targetUserId}/moderations/{id}");
+			var response = await Global.httpClient.DeleteAsync($"/auth/user/playermoderations/{id}");
+			return JObject.Parse(await response.Content.ReadAsStringAsync());
+		}
+
+		/// <summary>
+		/// Returns a single Player Moderation
+		/// </summary>
+		/// <returns>Player moderation</returns>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
+		public async Task<PlayerModeration> Get()
+		{
+			Logger.LogDebug("Get moderation");
+			var request = await Global.httpClient.GetAsync($"auth/user/playermoderations/{id}");
+			return await Utils.UtilFunctions.ParseResponse<PlayerModeration>(request);
 		}
 	}
 }

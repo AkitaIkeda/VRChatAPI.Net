@@ -11,7 +11,8 @@ using VRChatAPI.Utils;
 namespace VRChatAPI
 {
 	/// <summary>
-	/// VRChat Api Client
+	/// VRChat API wrapper <br/>
+	/// Documentation: <see href="https://vrchatapi.github.io/"/>
 	/// </summary>
 	public class VRChatAPIClient
 	{
@@ -26,12 +27,13 @@ namespace VRChatAPI
 		public HttpClientHandler HttpClientHandler => Global.httpClientHandler;
 		public CookieContainer CookieContainer => HttpClientHandler.CookieContainer;
 
-		public SystemAPI SystemApi { get; private set; }
-		public UserAPI UserApi { get; private set; }
-		public WorldAPI WorldApi { get; private set; }
-		public ModerationsAPI ModerationsApi { get; private set; }
+		public SystemAPI SystemAPI { get; private set; }
+		public UserAPI UserAPI { get; private set; }
+		public WorldAPI WorldAPI { get; private set; }
+		public ModerationsAPI ModerationsAPI { get; private set; }
 		// public AvatarApi AvatarApi { get; private set; }
-		public FavoriteAPI FavoriteApi { get; private set; }
+		public FavoriteAPI FavoriteAPI { get; private set; }
+		public FileAPI FileAPI { get; private set; }
 
 		public WSListener WSListener { get; private set; }
 
@@ -50,7 +52,7 @@ namespace VRChatAPI
 		/// </summary>
 		/// <param name="username">UserID</param>
 		/// <param name="password">Password</param>
-		/// <exception cref="UnauthorizedRequestException"/>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		public VRChatAPIClient(string username, string password){
 			Logger.LogDebug($"Entering {nameof(VRChatAPIClient)} constructor with ID&PASS");
 			initEndpoints();
@@ -62,7 +64,7 @@ namespace VRChatAPI
 		/// Instantiate VRChatApi client with Cookie
 		/// </summary>
 		/// <param name="cookie">CookieContainer that has ApiKey And auth token</param>
-		/// <exception cref="UnauthorizedRequestException"/>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		public VRChatAPIClient(CookieContainer cookie)
 		{
 			Logger.LogDebug($"Entering {nameof(VRChatAPIClient)} constructor with CookieContainer");
@@ -75,7 +77,7 @@ namespace VRChatAPI
 		/// <summary>
 		/// Start to listen for Webssocket API
 		/// </summary>
-		/// <exception cref="UnauthorizedRequestException"/>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		public async Task WSListen(CancellationToken ct) => await WSListen((await VerifyAuth()).token, ct);
 
 		/// <summary>
@@ -86,19 +88,20 @@ namespace VRChatAPI
 
 		private void initEndpoints(){
 			// initialize endpoint classes
-			SystemApi = new SystemAPI();
-			UserApi = new UserAPI();
-			WorldApi = new WorldAPI();
-			ModerationsApi = new ModerationsAPI();
+			SystemAPI = new SystemAPI();
+			UserAPI = new UserAPI();
+			WorldAPI = new WorldAPI();
+			ModerationsAPI = new ModerationsAPI();
 			// AvatarApi = new AvatarApi();
-			FavoriteApi = new FavoriteAPI();
+			FavoriteAPI = new FavoriteAPI();
+			FileAPI = new FileAPI();
 		}
 
 		/// <summary>
 		/// Initializes Global.HttpClient
 		/// </summary>
 		/// <param name="client">HttpClient to use</param>
-		/// <exception cref="UnauthorizedRequestException"/>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		private async Task initHttpClient(string username, string password)
 		{
 			initHttpClient(new CookieContainer());
@@ -118,11 +121,11 @@ namespace VRChatAPI
 			Global.httpClientHandler = handler;
 			Global.httpClient = new HttpClient(handler);
 			Global.httpClient.DefaultRequestHeaders.Add("User-Agent", "C# VRChat API Client");
-			Global.httpClient.BaseAddress = new Uri("https://api.vrchat.cloud/api/1/");
+			Global.httpClient.BaseAddress = new Uri("https://vrchat.com/api/1/");
 			Logger.LogDebug($"VRChat API base address set to {Global.httpClient.BaseAddress}");
 		}
-		public async Task<Objects.CurrentUser> Login(string username, string password) => await UserApi.Login(username, password);
-		public async Task<(bool ok, string token)> VerifyAuth() => await SystemApi.VerifyAuth();
-		public async Task<ConfigResponse> GetAndSetApiKey() => await SystemApi.RemoteConfig();
+		public async Task<Objects.CurrentUser> Login(string username, string password) => await UserAPI.Login(username, password);
+		public async Task<(bool ok, string token)> VerifyAuth() => await UserAPI.VerifyAuth();
+		public async Task<ConfigResponse> GetAndSetApiKey() => await SystemAPI.RemoteConfig();
 	}
 }

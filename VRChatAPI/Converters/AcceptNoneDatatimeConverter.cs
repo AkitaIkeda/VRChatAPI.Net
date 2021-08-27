@@ -2,7 +2,7 @@ using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace VRChatAPI.Objects
+namespace VRChatAPI.Converters
 {
 	internal class AcceptNoneDatatimeConverter: IsoDateTimeConverter
 	{

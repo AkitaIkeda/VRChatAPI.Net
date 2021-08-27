@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 
-namespace VRChatAPI
+namespace VRChatAPI.Converters
 {
 	internal class AsTConverter<T> : JsonConverter
 	{

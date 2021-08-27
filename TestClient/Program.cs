@@ -22,12 +22,12 @@ namespace TestClient
 				});
 			});
 
-			var config = await api.SystemApi.RemoteConfig();
-			var currentUser = await api.UserApi.GetCurrentUser();
+			var config = await api.SystemAPI.RemoteConfig();
+			var currentUser = await api.UserAPI.GetCurrentUser();
 			var currentAvatar = await currentUser.currentAvatar.Get();
-			var friends = await api.UserApi.GetFriends(offline: true);
-			var notifications = await api.UserApi.GetAllNotifications();
-			var worlds = await api.WorldApi.Search();
+			var friends = await api.UserAPI.GetFriends(offline: true);
+			var notifications = await api.UserAPI.GetNotifications();
+			var worlds = await api.WorldAPI.Search();
 			Console.ReadKey();
 		}
 

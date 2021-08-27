@@ -22,25 +22,16 @@ namespace VRChatAPI.Utils
 				jObject[key] = value;
 		}
 
-
 		public static async Task<T> ParseResponse<T>(HttpResponseMessage responseMessage)
 		{
-			T res = default(T);
-
-			if (responseMessage.IsSuccessStatusCode)
-			{
-				var receivedJson = await responseMessage.Content.ReadAsStringAsync();
-				Global.LoggerFactory.CreateLogger("UtilFunctions.ParseResponse").LogDebug("JSON received: {receivedJson}", receivedJson);
-				res = JsonConvert.DeserializeObject<T>(receivedJson);
-			}
-
+			var receivedJson = await responseMessage.Content.ReadAsStringAsync();
 			responseMessage.Dispose();
-
-			return res;
+			Global.LoggerFactory.CreateLogger("VRChatAPI.Utils.UtilFunctions.ParseResponse").LogDebug("JSON received: {receivedJson}", receivedJson);
+			return  JsonConvert.DeserializeObject<T>(receivedJson);
 		}
 
 		public static string MakeQuery(Dictionary<string, object> p, string delimiter = "&", string connection = "=") => string.Join(delimiter, p
 			.Where(v => !(v.Value is null))
-			.Select(v =>$"\"{v.Key}{connection}{System.Web.HttpUtility.UrlEncode(v.Value.ToString())}\""));
+			.Select(v =>$"{v.Key}{connection}{System.Web.HttpUtility.UrlEncode(JsonConvert.SerializeObject(v.Value))}"));
 		}
 }
