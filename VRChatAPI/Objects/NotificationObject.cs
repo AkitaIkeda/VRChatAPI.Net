@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Logging;
+using VRChatAPI.Converters;
 
 #pragma warning disable IDE1006
 
@@ -25,12 +26,11 @@ namespace VRChatAPI.Objects
 	{
 		all,
 		broadcast,
-		message,
 		friendRequest,
 		invite,
-		requestInvite,
+		message,
+		RequestInvite,
 		votetokick,
-		halp, // Unknown
 		hidden, // Unknown
 	}
 
@@ -54,8 +54,8 @@ namespace VRChatAPI.Objects
 		/// The endpoint can suggest the notification still exists, but it can't be gotten by get all method
 		/// </remarks>
 		/// <returns>Updated Notification object</returns>
-		/// <exception cref="UnauthorizedRequestException"/>
-		public async Task<Notification> Hide()
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
+		public async Task<Notification> Delete()
 		{
 			Logger.LogDebug("Hide notification {id}", id);
 			var response = await Global.httpClient.PutAsync($"auth/user/notifications/{id}/hide", null);
@@ -66,7 +66,7 @@ namespace VRChatAPI.Objects
 		/// Mark the notification as read
 		/// </summary>
 		/// <returns>Updated Notification object</returns>
-		/// <exception cref="UnauthorizedRequestException"/>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		public async Task<Notification> MarkAsRead()
 		{
 			Logger.LogDebug("Mark {id} as read", id);
@@ -80,7 +80,7 @@ namespace VRChatAPI.Objects
 		private ILogger Logger => Global.LoggerFactory.CreateLogger<Notification>();
 
 		public NotificationId id { get; set; }
-		public string senderUserId { get; set; }
+		public UserId senderUserId { get; set; }
 		public string senderUsername { get; set; }
 		public NotificationTypes type { get; set; }
 		public string message { get; set; }
@@ -90,16 +90,13 @@ namespace VRChatAPI.Objects
 		public Details details => JsonConvert.DeserializeObject<Details>(_details);
 		public bool seen { get; set; }
 		public DateTime? created_at { get; set; }
-		public string receiverUserId { get; set; }
-		public string jobName { get; set; }
-		public string jobColor { get; set; }
 
 		/// <summary>
 		/// Accept friend request
-		/// To ignore, use <see cref="NotificationId.DeleteNotification">DeleteNotification</see>
+		/// To ignore, use <see cref="NotificationId.Delete">DeleteNotification</see>
 		/// </summary>
 		/// <returns>Response from server</returns>
-		/// <exception cref="UnauthorizedRequestException"/>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		/// <exception cref="InvalidOperationException"/>
 		public async Task<JObject> AcceptFriendRequest()
 		{

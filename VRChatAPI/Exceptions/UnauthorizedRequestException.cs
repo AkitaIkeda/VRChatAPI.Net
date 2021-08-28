@@ -12,7 +12,7 @@ namespace VRChatAPI.Exceptions
     /// </remarks>
     /// <seealso cref="Endpoints.SystemAPI.VerifyAuth">SystemApi.VerifyAuth</seealso>
     [Serializable]
-    internal class UnauthorizedRequestException : HttpRequestException
+    public class UnauthorizedRequestException : HttpRequestException
     {
         public UnauthorizedRequestException()
         {

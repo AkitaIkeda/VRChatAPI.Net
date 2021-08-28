@@ -8,13 +8,33 @@ using VRChatAPI.Utils;
 
 namespace VRChatAPI.Objects
 {
-	// Unknown objects
-	using CheckFileFilterListenerDisable = JToken;
-	using FeedReservedDeploymentBuild = JToken;
-	using NoiseSdk = JToken;
-	using OffsetBiographyCursedClientCountry = JToken;
-	using PositionLengthCrossError = JToken;
-	using WorldCheckAccount = JToken;
+	public enum DeploymentGroup
+	{
+		/// <summary>
+		/// Production
+		/// </summary>
+		blue,
+		/// <summary>
+		/// Production
+		/// </summary>
+		green,
+		/// <summary>
+		/// Development
+		/// </summary>
+		grape,
+		/// <summary>
+		/// Development
+		/// </summary>
+		cherry,
+	}
+
+	public enum WorldRowPlatformEnum
+	{
+		ThisPlatformSupported,
+		any,
+		AllPlatforms,
+		ThisPlatformOnly,
+	}
 
 	public class DynamicWorldRow
 	{
@@ -25,7 +45,7 @@ namespace VRChatAPI.Objects
 		/// <summary>
 		/// Sort Heading
 		/// </summary>
-		public SortOptions sortHeading { get; set; }
+		public WorldSortOptions sortHeading { get; set; }
 		/// <summary>
 		/// Ownership filter
 		/// </summary>
@@ -37,7 +57,7 @@ namespace VRChatAPI.Objects
 		/// <summary>
 		/// Supported Platform
 		/// </summary>
-		public string platform { get; set; }
+		public WorldRowPlatformEnum platform { get; set; }
 		/// <summary>
 		/// Index of row
 		/// </summary>
@@ -59,7 +79,7 @@ namespace VRChatAPI.Objects
 				tags: tag, 
 				platform: currentPlatform, 
 				order: sortOrder, 
-				user: (sortOwnership.ToLowerInvariant() == "mine") ? (UserOptions?)UserOptions.Me : null);
+				user: (sortOwnership.ToLowerInvariant() == "mine") ? (UserOptions?)UserOptions.me : null);
 		}
 	}
 
@@ -99,10 +119,13 @@ namespace VRChatAPI.Objects
 		public int viewSegmentLength { get; set; }
 	}
 	
+
+	/// <summary>
+	/// Response of Get /config
+	/// For more information, see <see href="https://vrchatapi.github.io/docs/api#get-/config" />
+	/// </summary>
 	public class ConfigResponse
 	{
-		public bool VoiceEnableDegradation { get; set; }
-		public bool VoiceEnableReceiverLimiting { get; set; }
 		/// <summary>
 		/// Address of the VRChat's office
 		/// </summary>
@@ -118,7 +141,6 @@ namespace VRChatAPI.Objects
 		public string apiKey { get; set; }
 		public string appName { get; set; }
 		public string buildVersionTag { get; set; }
-		public List<CheckFileFilterListenerDisable> checkFileFilterListenerDisable { get; set; }
 		/// <summary>
 		/// ApiKey that is needed to call api
 		/// </summary>
@@ -140,13 +162,15 @@ namespace VRChatAPI.Objects
 		/// Current version of Term of Service
 		/// </summary>
 		public int currentTOSVersion { get; set; }
-		public bool cursedDeployment { get; set;}
 		/// <summary>
 		/// Default Avatar's Id
 		/// </summary>
 		/// <value></value>
 		public AvatarId defaultAvatar { get; set; }
-		public string deploymentGroup { get; set; }
+		/// <summary>
+		/// Used to identify which API deployment cluster is currently responding.
+		/// </summary>
+		public DeploymentGroup deploymentGroup { get; set; }
 		public string devAppVersionStandalone { get; set; }
 		public string devDownloadLinkWindows { get; set; }
 		/// <summary>
@@ -155,8 +179,6 @@ namespace VRChatAPI.Objects
 		public string devSdkUrl { get; set; }
 		public string devSdkVersion { get; set; }
 		public string devServerVersionStandalone { get; set; }
-		[JsonProperty("dis-countdown")]
-		public DateTime? dis_countdown { get; set; }
 
 		#region disables
 		public bool disableAvatarCopying { get; set; }
@@ -166,7 +188,6 @@ namespace VRChatAPI.Objects
 		public bool disableEmail { get; set; }
 		public bool disableEventStream { get; set; }
 		public bool disableFeedbackGating { get; set; }
-		public bool disableFrontendBuilds { get; set; }
 		public bool disableHello { get; set; }
 		public bool disableRegistration { get; set; }
 		public bool disableSteamNetworking { get; set; }
@@ -185,17 +206,15 @@ namespace VRChatAPI.Objects
 		/// </summary>
 		public List<DynamicWorldRow> dynamicWorldRows { get; set; }
 		public Events events { get; set; }
-		public bool favoriteSocketShader { get; set; }
-		public List<FeedReservedDeploymentBuild> feedReservedDeploymentBuild { get; set; }
 		public string gearDemoRoomId { get; set; }
-		/// <summary>
-		/// Home world Id
-		/// </summary>
-		public WorldId homeWorldId { get; set; }
 		/// <summary>
 		/// Redirect Url of VRChat website
 		/// </summary>
 		public string homepageRedirectTarget { get; set; }
+		/// <summary>
+		/// Home world Id
+		/// </summary>
+		public WorldId homeWorldId { get; set; }
 		/// <summary>
 		/// Hub World Id
 		/// </summary>
@@ -204,7 +223,6 @@ namespace VRChatAPI.Objects
 		/// VRChat's job application email
 		/// </summary>
 		public string jobsEmail { get; set; }
-		public bool labelVerificationOwnershipModeration { get; set; }
 		/// <summary>
 		/// Daily message from VRChat
 		/// </summary>
@@ -215,18 +233,12 @@ namespace VRChatAPI.Objects
 		/// </summary>
 		public string moderationEmail { get; set; }
 		public int moderationQueryPeriod { get; set; }
-		public bool nameYacht { get; set; }
-		public List<NoiseSdk> noiseSdk { get; set; }
 		public string notAllowedToSelectAvatarInPrivateWorldMessage { get; set; }
-		public List<OffsetBiographyCursedClientCountry> offsetBiographyCursedClientCountry { get; set; }
 		public string plugin { get; set; }
-		public PositionLengthCrossError positionLengthCrossError { get; set; }
 		public string releaseAppVersionStandalone { get; set; }
 		public string releaseSdkUrl { get; set; }
 		public string releaseSdkVersion { get; set; }
 		public string releaseServerVersionStandalone { get; set; }
-		public int reliableHiddenEmbedCacheList { get; set; }
-		public int sandwichFile { get; set; }
 		public string sdkDeveloperFaqUrl { get; set; }
 		/// <summary>
 		/// Discord invitation Url
@@ -238,12 +250,10 @@ namespace VRChatAPI.Objects
 		/// </summary>
 		public string sdkUnityVersion { get; set; }
 		public string serverName { get; set; }
-		public int shaderReliable { get; set; }
 		/// <summary>
 		/// VRChat's support email
 		/// </summary>
 		public string supportEmail { get; set; }
-		public bool thresholdCursed { get; set; }
 		/// <summary>
 		/// Timeout World Id
 		/// </summary>
@@ -254,7 +264,7 @@ namespace VRChatAPI.Objects
 		public WorldId tutorialWorldId { get; set; }
 		public int updateRateMsMaximum { get; set; }
 		public int updateRateMsMinimum { get; set; }
-		public int updateRateMsnormal { get; set; }
+		public int updateRateMsNormal { get; set; }
 		public int updateRateMsUdonManual { get; set; }
 		public int uploadAnalysisPercent { get; set; }
 		public List<string> urlList { get; set; }
@@ -265,11 +275,12 @@ namespace VRChatAPI.Objects
 		public int userVerificationTimeout { get; set; }
 		public string viveWindowsUrl { get; set; }
 		public List<string> whiteListedAssetUrls { get; set; }
-		public WorldCheckAccount worldCheckAccount {get; set; }
 		public int worldUpdatePeriod { get; set; }
 		[JsonProperty("youtubedl-hash")]
 		public string youtubedl_hash { get; set; }
 		[JsonProperty("youtubedl-version")]
 		public DateTime? youtubedl_version { get; set; }
+
+		public bool? sdkEnableDeltaCompression { get; set; }
 	}
 }

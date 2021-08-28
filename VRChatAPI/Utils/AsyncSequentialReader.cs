@@ -11,7 +11,7 @@ namespace VRChatAPI.Utils
 		public delegate Task<IEnumerable<T>> ReadFunc(uint offset, uint n);
 
 		private ReadFunc reader;
-		private uint bufferSize;
+		public uint bufferSize { get; set; }
 
 		/// <summary>
 		/// Constructs a new SequentialReader

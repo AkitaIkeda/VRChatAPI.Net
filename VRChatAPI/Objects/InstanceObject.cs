@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Logging;
+using VRChatAPI.Converters;
 
 #pragma warning disable IDE1006
 
@@ -54,11 +55,11 @@ namespace VRChatAPI.Objects
 		/// Get Instance object from Location
 		/// </summary>
 		/// <returns>Instance object</returns>
-		/// <exception cref="UnauthorizedRequestException"/>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		public async Task<Instance> GetInstance()
 		{
 			Logger.LogDebug("Get instance {location}", this.ToString());
-			var response = await Global.httpClient.GetAsync($"instances/{this.ToString()}");
+			var response = await Global.httpClient.GetAsync($"worlds/{WorldId}/{InstanceId}");
 			return await Utils.UtilFunctions.ParseResponse<Instance>(response);
 		}
 
@@ -66,39 +67,39 @@ namespace VRChatAPI.Objects
 		/// Send Votekick to the user in this location
 		/// </summary>
 		/// <param name="id">User id to send vote kick for</param>
-		/// <exception cref="UnauthorizedRequestException"/>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		public async Task VoteKick(UserId id)
 		{
 			Logger.LogDebug("Vote kick to {userId} in {location}", id, this.ToString());
 			var json = new JObject();
 			json.Add("worldId", WorldId.ToString());
 			json.Add("instanceId", InstanceId.ToString());
-			var content = new StringContent(json.ToString(), Encoding.UTF8);
+			var content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
 			await Global.httpClient.PostAsync($"user/{id}/votekick", content);
 		}
 	}
 
 	public class Instance
 	{
-		public Location id { get; set; }
-		public Location location { get; set; }
-		public string instanceId { get; set; }
-		public string name { get; set; }
-		public WorldId worldId { get; set; }
-		public InstanceType type { get; set; }
-		public UserId ownerId { get; set; }
-		public List<string> tags { get; set; }
 		public bool active { get; set; }
-		public bool full { get; set; }
-		public int n_users { get; set; }
-		public int capacity { get; set; }
-		public Platforms platforms { get; set; } 
-		public string shortName { get; set; }
-		public string clientNumber { get; set; }
-		public string photonRegion { get; set; }
-		public string region { get; set; }
 		public bool canRequestInvite { get; set; }
+		public int capacity { get; set; }
+		public string clientNumber { get; set; }
+		public bool full { get; set; }
+		public Location id { get; set; }
+		public string instanceId { get; set; }
+		public Location location { get; set; }
+		public int n_users { get; set; }
+		public string name { get; set; }
+		public string nonce { get; set; }
+		public UserId ownerId { get; set; }
 		public bool permanent { get; set; }
-		public UserId hidden { get; set; }
+		public string photonRegion { get; set; }
+		public Platforms platforms { get; set; } 
+		public string region { get; set; }
+		public string shortName { get; set; }
+		public List<string> tags { get; set; }
+		public InstanceType type { get; set; }
+		public WorldId worldId { get; set; }
 	}
 }
