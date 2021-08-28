@@ -33,7 +33,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: nupkgs
-        key: ${{ hashFiles('**/*.cs')) }}
+        key: ${{ hashFiles('**/*.cs') }}
 
 
   upload:
