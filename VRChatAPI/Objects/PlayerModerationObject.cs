@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Converters;
 using Microsoft.Extensions.Logging;

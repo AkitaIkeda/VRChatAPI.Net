@@ -123,7 +123,7 @@ namespace VRChatAPI.Objects
 				{ "unityPackageUrl", unityPackageUrl },
 			};
 			Logger.LogDebug("Update avatar {id}: {params}", id, Utils.UtilFunctions.MakeQuery(p, ", "));
-			StringContent content = new StringContent(JObject.FromObject(p.Where(p => !(p.Value is null))).ToString(), Encoding.UTF8);
+			StringContent content = new StringContent(JObject.FromObject(p.Where(p => !(p.Value is null)).ToDictionary(v => v.Key, v => v.Value)).ToString(), Encoding.UTF8, "application/json");
 			var response = await Global.httpClient.PutAsync($"avatars/{id}", content);
 			return await Utils.UtilFunctions.ParseResponse<Avatar>(response);
 		}

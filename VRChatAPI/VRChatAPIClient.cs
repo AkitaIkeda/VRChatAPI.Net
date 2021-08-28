@@ -41,10 +41,10 @@ namespace VRChatAPI
 		/// Instantiate VRChatApi client without auth
 		/// </summary>
 		/// <remarks>You will need to Login first in order to call most of methods
-		public VRChatAPIClient(){
+		private VRChatAPIClient(){
 			Logger.LogDebug($"Entering {nameof(VRChatAPIClient)} constructor with no args");
-			initHttpClient(new CookieContainer());
 			initEndpoints();
+			initHttpClient(new CookieContainer());
 		}
 		
 		/// <summary>
@@ -55,9 +55,9 @@ namespace VRChatAPI
 		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		public VRChatAPIClient(string username, string password){
 			Logger.LogDebug($"Entering {nameof(VRChatAPIClient)} constructor with ID&PASS");
-			initEndpoints();
+			preInit();
 			initHttpClient(username, password).Wait();
-			WSListener = new WSListener();
+			postInitAsync().Wait();
 		}
 		
 		/// <summary>
@@ -68,10 +68,18 @@ namespace VRChatAPI
 		public VRChatAPIClient(CookieContainer cookie)
 		{
 			Logger.LogDebug($"Entering {nameof(VRChatAPIClient)} constructor with CookieContainer");
-			initEndpoints();
+			preInit();
 			initHttpClient(cookie);
 			VerifyAuth().Wait();
+			postInitAsync().Wait();
+		}
+
+		private void preInit(){
+			initEndpoints();
 			WSListener = new WSListener();
+		}
+		private async Task postInitAsync(){
+			Global.RemoteConfig = await SystemAPI.RemoteConfig();
 		}
 
 		/// <summary>
@@ -126,6 +134,6 @@ namespace VRChatAPI
 		}
 		public async Task<Objects.CurrentUser> Login(string username, string password) => await UserAPI.Login(username, password);
 		public async Task<(bool ok, string token)> VerifyAuth() => await UserAPI.VerifyAuth();
-		public async Task<ConfigResponse> GetAndSetApiKey() => await SystemAPI.RemoteConfig();
+		public ConfigResponse RemoteConfig => Global.RemoteConfig;
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -90,7 +90,7 @@ namespace VRChatAPI.Objects
 				{ "tags", tags },
 			};
 			Logger.LogDebug("Update {owner} Favorite Group of {type} named {name}: {param}", ownerId, type, name, Utils.UtilFunctions.MakeQuery(p, ", "));
-			StringContent content = new StringContent(JObject.FromObject(p.Where(v => !(v.Value is null))).ToString(), Encoding.UTF8);
+			StringContent content = new StringContent(JObject.FromObject(p.Where(v => !(v.Value is null)).ToDictionary(v => v.Key, v => v.Value)).ToString(), Encoding.UTF8, "application/json");
 			var response = await Global.httpClient.PutAsync($"favorite/group/{type}/{name}/{ownerId}", content);
 		}
 

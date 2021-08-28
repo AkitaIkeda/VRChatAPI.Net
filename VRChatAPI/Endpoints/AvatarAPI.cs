@@ -36,7 +36,7 @@ namespace VRChatAPI.Endpoints
 				{ "unityPackageUrl", unityPackageUrl },
 			};
 			Logger.LogDebug("Create avatar {params}", Utils.UtilFunctions.MakeQuery(p, ", "));
-			var content = new StringContent(JObject.FromObject(p.Where(x => !(x.Value is null))).ToString(), Encoding.UTF8);
+			var content = new StringContent(JObject.FromObject(p.Where(x => !(x.Value is null)).ToDictionary(v => v.Key, v => v.Value)).ToString(), Encoding.UTF8, "application/json");
 			var response = await Global.httpClient.PutAsync("avatars", content);
 			return await Utils.UtilFunctions.ParseResponse<Avatar>(response);
 		}

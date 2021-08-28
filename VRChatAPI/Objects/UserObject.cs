@@ -227,7 +227,7 @@ namespace VRChatAPI.Objects
 			var json = new JObject();
 			json.Add("type", type.ToString());
 			json.Add("moderated", id);
-			var content = new StringContent(json.ToString(), Encoding.UTF8);
+			var content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
 			var response = await Global.httpClient.PostAsync("auth/user/playermoderations", content);
 			return await Utils.UtilFunctions.ParseResponse<PlayerModeration>(response);
 		}
@@ -238,7 +238,7 @@ namespace VRChatAPI.Objects
 			var json = new JObject();
 			json.Add("type", type.ToString());
 			json.Add("moderated", id);
-			var content = new StringContent(json.ToString(), Encoding.UTF8);
+			var content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
 			var response = await Global.httpClient.PutAsync("auth/user/unplayermoderate", content);
 			return JObject.Parse(await response.Content.ReadAsStringAsync());
 		}
@@ -380,7 +380,7 @@ namespace VRChatAPI.Objects
 
 			Logger.LogDebug("Prepared JSON to put: {json}", json);
 
-			StringContent content = new StringContent(json.ToString(), Encoding.UTF8);
+			StringContent content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
 
 			content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 

@@ -18,6 +18,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <Reference Include="librsync.net">
+      <HintPath>Dependencies\librsync.net.dll</HintPath>
+    </Reference>
+    <Reference Include="Blake2Sharp">
+      <HintPath>Dependencies\Blake2Sharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

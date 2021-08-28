@@ -31,7 +31,7 @@ namespace VRChatAPI.Utils
 		}
 
 		public static string MakeQuery(Dictionary<string, object> p, string delimiter = "&", string connection = "=") => string.Join(delimiter, p
-			.Where(v => !(v.Value is null))
-			.Select(v =>$"{v.Key}{connection}{System.Web.HttpUtility.UrlEncode(JsonConvert.SerializeObject(v.Value))}"));
+			.Where(v => !(v.Value is null)).ToDictionary(v => v.Key, v => v.Value)
+			.Select(v =>$"{v.Key}{connection}{System.Web.HttpUtility.UrlEncode(JToken.FromObject(v.Value).ToString())}"));
 		}
 }

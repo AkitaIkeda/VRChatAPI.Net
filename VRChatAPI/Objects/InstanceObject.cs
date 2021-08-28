@@ -74,7 +74,7 @@ namespace VRChatAPI.Objects
 			var json = new JObject();
 			json.Add("worldId", WorldId.ToString());
 			json.Add("instanceId", InstanceId.ToString());
-			var content = new StringContent(json.ToString(), Encoding.UTF8);
+			var content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
 			await Global.httpClient.PostAsync($"user/{id}/votekick", content);
 		}
 	}

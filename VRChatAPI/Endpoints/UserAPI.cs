@@ -72,7 +72,7 @@ namespace VRChatAPI.Endpoints
 			var json = new JObject(){
 				{ "code", code },
 			};
-			var content = new StringContent(json.ToString(), Encoding.UTF8);
+			var content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
 			content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 			var response =    await Global.httpClient.PutAsync("auth/twofactorauth/totp/verify", content);
 			return ((bool)JObject.Parse(await response.Content.ReadAsStringAsync())["verified"]);
@@ -90,7 +90,7 @@ namespace VRChatAPI.Endpoints
 			var json = new JObject(){
 				{ "code", code },
 			};
-			var content = new StringContent(json.ToString(), Encoding.UTF8);
+			var content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
 			content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 			var response =    await Global.httpClient.PutAsync("auth/twofactorauth/otp/verify", content);
 			return ((bool)JObject.Parse(await response.Content.ReadAsStringAsync())["verified"]);

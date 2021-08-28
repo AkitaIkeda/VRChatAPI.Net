@@ -16,11 +16,16 @@ namespace VRChatAPI.Abstracts
 			return $"{prefix}_{guid.ToString("D")}";
 		}
 
-		public virtual void Parse(string s)
+		public virtual bool CanParse(string s)
 		{
 			var t = s.Split("_");
-			if (t.Length < 2) throw new ArgumentException($"Invalid id string: {s}");
-			if (t[0] != prefix) throw new ArgumentException($"Invalid id string: {s}");
+			return t.Length >= 2 && t[0] == prefix;
+		}
+
+		public virtual void Parse(string s)
+		{
+			if (!CanParse(s)) throw new ArgumentException($"Invalid id string: {s}");
+			var t = s.Split("_");
 			guid = Guid.ParseExact(t[1], "D");
 		}
 		public override string ToString() => id;

@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
+using VRChatAPI.Objects;
 
 namespace VRChatAPI
 {
@@ -12,6 +13,8 @@ namespace VRChatAPI
             builder => {
             }
         );
+
+		internal static ConfigResponse RemoteConfig;
 
 		internal static CookieContainer CookieContainer => httpClientHandler.CookieContainer;
     }

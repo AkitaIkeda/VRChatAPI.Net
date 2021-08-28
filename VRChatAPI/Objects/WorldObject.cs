@@ -105,8 +105,17 @@ namespace VRChatAPI.Objects
 		public WorldId() => guid = Guid.NewGuid();
 		private static ILogger Logger => Global.LoggerFactory.CreateLogger<WorldId>();
 
-		public override string prefix => "wrld";
+		public static string DefaultPrefix { get; set; } = "wrld";
+		public static string[] Prefixes { get; set; } = new string[] { "wrld", "wld", "offline" };
+
+		public override string prefix => DefaultPrefix;
 		public WorldId(string id) => this.id = id;
+
+		public override bool CanParse(string s)
+		{
+			var t = s.Split("_");
+			return t.Length >= 2 && Prefixes.Contains(t[0]);
+		}
 
 		public static implicit operator string(WorldId worldId) => worldId.ToString();
 		public static implicit operator WorldId(string s) => new WorldId(s);
@@ -208,7 +217,7 @@ namespace VRChatAPI.Objects
 				{ "unityVersion", unityVersion },
 			};
 			Logger.LogDebug("update world {id}: {params}", id, Utils.UtilFunctions.MakeQuery(p, ", "));
-			var content = new StringContent(JObject.FromObject(p.Where(v => !(v.Value is null))).ToString(), Encoding.UTF8);
+			var content = new StringContent(JObject.FromObject(p.Where(v => !(v.Value is null)).ToDictionary(v => v.Key, v => v.Value)).ToString(), Encoding.UTF8, "application/json");
 			var response = await Global.httpClient.PutAsync($"worlds/{id}", content);
 			return await Utils.UtilFunctions.ParseResponse<World>(response);
 		}

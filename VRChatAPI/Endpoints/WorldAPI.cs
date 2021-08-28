@@ -200,7 +200,7 @@ namespace VRChatAPI.Endpoints
 				{ "unityVersion", unityVersion },
 			};
 			Logger.LogDebug("Create world: {params}", Utils.UtilFunctions.MakeQuery(p, ", "));
-			var content = new StringContent(JObject.FromObject(p.Where(v => !(v.Value is null))).ToString(), Encoding.UTF8);
+			var content = new StringContent(JObject.FromObject(p.Where(v => !(v.Value is null)).ToDictionary(v => v.Key, v => v.Value)).ToString(), Encoding.UTF8, "application/json");
 			var response = await Global.httpClient.PostAsync("worlds", content);
 			return await Utils.UtilFunctions.ParseResponse<World>(response);
 		}

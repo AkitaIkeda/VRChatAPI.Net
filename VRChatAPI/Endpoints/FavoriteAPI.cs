@@ -37,7 +37,7 @@ namespace VRChatAPI.Endpoints
 				{ "tags", new JArray(tags)}
 			};
 
-			StringContent content = new StringContent(json.ToString(), Encoding.UTF8);
+			StringContent content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
 
 			content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 

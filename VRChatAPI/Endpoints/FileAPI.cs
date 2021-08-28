@@ -38,7 +38,10 @@ namespace VRChatAPI.Endpoints
 				{ "tags", tags },
 			};
 			Logger.LogDebug("Create file {params}", Utils.UtilFunctions.MakeQuery(p, ", "));
-			var content = new StringContent(JObject.FromObject(p.Where(v => !(v.Value is null))).ToString(), Encoding.UTF8);
+			// var content = new StringContent(JObject.FromObject(p.Where(v => !(v.Value is null)).ToDictionary(v => v.Key, v => v.Value)).ToString(), Encoding.UTF8, "application/json");
+			const string Json = "{\"name\": \"test\",\"mimeType\": \"image/png\",\"extension\": \".png\",\"tags\": [\"test\"]}";
+			// var json = JObject.Parse(Json);
+			var content = new StringContent(Json, Encoding.UTF8, "application/json");
 			var response = await Global.httpClient.PostAsync("file", content);
 			return await Utils.UtilFunctions.ParseResponse<File>(response);
 		}

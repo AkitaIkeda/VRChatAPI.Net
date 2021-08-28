@@ -28,6 +28,14 @@ namespace VRChatAPI.Objects
 		cherry,
 	}
 
+	public enum WorldRowPlatformEnum
+	{
+		ThisPlatformSupported,
+		any,
+		AllPlatforms,
+		ThisPlatformOnly,
+	}
+
 	public class DynamicWorldRow
 	{
 		/// <summary>
@@ -49,7 +57,7 @@ namespace VRChatAPI.Objects
 		/// <summary>
 		/// Supported Platform
 		/// </summary>
-		public PlatformEnum platform { get; set; }
+		public WorldRowPlatformEnum platform { get; set; }
 		/// <summary>
 		/// Index of row
 		/// </summary>
@@ -272,5 +280,7 @@ namespace VRChatAPI.Objects
 		public string youtubedl_hash { get; set; }
 		[JsonProperty("youtubedl-version")]
 		public DateTime? youtubedl_version { get; set; }
+
+		public bool? sdkEnableDeltaCompression { get; set; }
 	}
 }
