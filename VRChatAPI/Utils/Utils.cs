@@ -10,18 +10,6 @@ namespace VRChatAPI.Utils
 {
 	static class UtilFunctions
 	{
-		public static void AddIfNotNull(this JObject jObject, string key, string value)
-		{
-			if (!string.IsNullOrEmpty(value))
-				jObject[key] = value;
-		}
-
-		public static void AddIfNotNull(this JObject jObject, string key, JToken value)
-		{
-			if (value.HasValues)
-				jObject[key] = value;
-		}
-
 		public static async Task<T> ParseResponse<T>(HttpResponseMessage responseMessage)
 		{
 			var receivedJson = await responseMessage.Content.ReadAsStringAsync();

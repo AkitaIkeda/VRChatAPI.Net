@@ -367,16 +367,19 @@ namespace VRChatAPI.Objects
 		{
 			Logger.LogDebug("Updating user info for {id}", id);
 
-			JObject json = new JObject();
-			json.AddIfNotNull("email", email);
-			json.AddIfNotNull("birthday", birthday);
-			json.AddIfNotNull("acceptedTOSVersion", acceptedTOSVersion);
-			json.AddIfNotNull("tags", JToken.FromObject(tags));
-			json.AddIfNotNull("status", status?.ToString());
-			json.AddIfNotNull("statusDescription", statusDescription);
-			json.AddIfNotNull("bio", bio);
-			json.AddIfNotNull("bioLinks", JToken.FromObject(bioLinks));
-			json.AddIfNotNull("userIcon", userIcon);
+			var p = new Dictionary<string, object>{
+				{ "email", email },
+				{ "birthday", birthday },
+				{ "acceptedTOSVersion", acceptedTOSVersion },
+				{ "tags", tags },
+				{ "status", status },
+				{ "statusDescription", statusDescription },
+				{ "bio", bio },
+				{ "bioLinks", bioLinks },
+				{ "userIcon", userIcon },
+			};
+
+			JObject json = JObject.FromObject(p.Where(v => !(v.Value is null)).ToDictionary(v => v.Key, v => v.Value));
 
 			Logger.LogDebug("Prepared JSON to put: {json}", json);
 
