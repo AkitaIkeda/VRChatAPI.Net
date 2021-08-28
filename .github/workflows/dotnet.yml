@@ -15,6 +15,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Create Key
+      run: echo '::set-output name=KEY::${{ hashFiles('**/*.cs') }}'
+      id: key
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -22,10 +26,6 @@ jobs:
 
     - name: Install dependencies
       run: dotnet restore
-
-    - name: Create Key
-      run: echo '::set-output name=KEY::${{ hashFiles('**/*.cs') }}'
-      id: key
 
     - name: Build
       run: dotnet build --configuration Release --no-restore -p:Version=${GITHUB_REF/refs\/tags\/v/}
@@ -49,6 +49,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Create Key
+      run: echo '::set-output name=KEY::${{ hashFiles('**/*.cs') }}'
+      id: key
+
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -56,10 +60,6 @@ jobs:
 
     - name: Install dependencies
       run: dotnet restore
-
-    - name: Create Key
-      run: echo '::set-output name=KEY::${{ hashFiles('**/*.cs') }}'
-      id: key
     
     - name: Get cache
       uses: actions/cache@v2
