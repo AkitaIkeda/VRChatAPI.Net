@@ -8,7 +8,7 @@ on:
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     env:
       DOTNET_NOLOGO: true
 
@@ -28,6 +28,36 @@ jobs:
 
     - name: Packaging
       run: dotnet pack VRChatAPI/ --include-symbols --configuration Release --no-build --output nupkgs -p:PackageVersion=${GITHUB_REF/refs\/tags\/v/}
+
+    - name: Cache nupkgs
+      uses: actions/cache@v2
+      with:
+        path: nupkgs
+        key: ${{ hashFiles('**/*.cs')) }}
+
+
+  upload:
+    needs: build
+    runs-on: windows-latest
+    env:
+      DOTNET_NOLOGO: true
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+
+    - name: Install dependencies
+      run: dotnet restore
+    
+    - name: Get cache
+      uses: actions/cache@v2
+      with:
+        path: nupkgs
+        key: ${{ hashFiles('**/*.cs')) }}
 
     - name: Nuget Push
       run:  dotnet nuget push nupkgs/*.nupkg -k ${{ secrets.NUGET_API_KEY }}  --source https://api.nuget.org/v3/index.json --skip-duplicate
