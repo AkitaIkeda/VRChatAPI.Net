@@ -24,7 +24,7 @@ jobs:
       run: dotnet restore
 
     - name: Create Key
-      run: echo ${{ hashFiles('**/*.cs') }}
+      run: echo '::set-output name=KEY::${{ hashFiles('**/*.cs') }}'
       id: key
 
     - name: Build
@@ -37,7 +37,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: nupkgs
-        key: ${{ steps.key.outputs }}
+        key: ${{ steps.key.outputs.KEY }}
 
 
   upload:
@@ -58,14 +58,14 @@ jobs:
       run: dotnet restore
 
     - name: Create Key
-      run: echo ${{ hashFiles('**/*.cs') }}
+      run: echo '::set-output name=KEY::${{ hashFiles('**/*.cs') }}'
       id: key
     
     - name: Get cache
       uses: actions/cache@v2
       with:
         path: nupkgs
-        key: ${{ steps.key.outputs }}
+        key: ${{ steps.key.outputs.KEY }}
 
     - name: Nuget Push
       run:  dotnet nuget push nupkgs/*.nupkg -k ${{ secrets.NUGET_API_KEY }}  --source https://api.nuget.org/v3/index.json --skip-duplicate
