@@ -89,41 +89,16 @@ namespace VRChatAPI.Objects
 		/// <summary>
 		/// Update avatar information
 		/// </summary>
-		/// <param name="assetUrl">asset URL</param>
-		/// <param name="id">Avatar id</param>
-		/// <param name="name">Avatar Name</param>
-		/// <param name="description">Description</param>
-		/// <param name="tags">Tags</param>
-		/// <param name="imageUrl">Image URL</param>
-		/// <param name="releaseStatus">Release status</param>
-		/// <param name="version">Version</param>
-		/// <param name="unityPackageUrl">Unitypackage URL</param>
-		/// <returns></returns>
-		public async Task<Avatar> Update(
-			string assetUrl = null,
-			AvatarId id = null,
-			string name = null,
-			string description = null,
-			List<string> tags = null,
-			string imageUrl = null,
-			ReleaseStatus? releaseStatus = null,
-			int? version = null,
-			string unityPackageUrl = null
-		)
+		/// <param name="to"><see cref="Avatar"> object which this object will be updated to. Null fields will be ignored.</param>
+		/// <returns>Updated Avatar object</returns>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
+		public async Task<Avatar> Update(Avatar to)
 		{
-			var p = new Dictionary<string, object> {
-				{ "assetUrl", assetUrl },
-				{ "id", id },
-				{ "name", name },
-				{ "description", description },
-				{ "tags", tags },
-				{ "imageUrl", imageUrl },
-				{ "releaseStatus", releaseStatus },
-				{ "version", version },
-				{ "unityPackageUrl", unityPackageUrl },
-			};
-			Logger.LogDebug("Update avatar {id}: {params}", id, Utils.UtilFunctions.MakeQuery(p, ", "));
-			StringContent content = new StringContent(JObject.FromObject(p.Where(p => !(p.Value is null)).ToDictionary(v => v.Key, v => v.Value)).ToString(), Encoding.UTF8, "application/json");
+			var json = JsonConvert.SerializeObject(to, new JsonSerializerSettings(){
+				NullValueHandling = NullValueHandling.Ignore,
+			});
+			Logger.LogDebug("Update avatar {id}: {params}");
+			StringContent content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
 			var response = await Global.httpClient.PutAsync($"avatars/{id}", content);
 			return await Utils.UtilFunctions.ParseResponse<Avatar>(response);
 		}
@@ -176,17 +151,17 @@ namespace VRChatAPI.Objects
 		public string authorName { get; set; }
 		public DateTime? created_at { get; set; }
 		public string description { get; set; }
-		public bool featured { get; set; }
+		public bool? featured { get; set; }
 		public AvatarId id { get; set; }
 		public string imageUrl { get; set; }
 		public string name { get; set; }
-		public ReleaseStatus releaseStatus { get; set; }
+		public ReleaseStatus? releaseStatus { get; set; }
 		public List<string> tags { get; set; }
 		public string thumbnailImageUrl { get; set; }
 		public List<UnityPackage> unityPackages { get; set; }
 		public string unityPackageUrl { get; set; }
 		public UnityPackageUrlObject unityPackageUrlObject { get; set; }
 		public DateTime? updated_at { get; set; }
-		public int version { get; set; }
+		public int? version { get; set; }
 	}
 }

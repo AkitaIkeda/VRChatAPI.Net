@@ -314,28 +314,28 @@ namespace VRChatAPI.Objects
 		ILogger Logger => Global.LoggerFactory.CreateLogger<CurrentUser>();
 
 		public List<PastDisplayName> pastDisplayNames { get; set; }
-		public bool hasEmail { get; set; }
-		public bool hasPendingEmail { get; set; }
+		public bool? hasEmail { get; set; }
+		public bool? hasPendingEmail { get; set; }
 		public string obfuscatedEmail { get; set; }
 		public string obfuscatedPendingEmail { get; set; }
-		public bool emailVerified { get; set; }
-		public bool hasBirthday { get; set; }
-		public bool unsubscribe { get; set; }
+		public bool? emailVerified { get; set; }
+		public bool? hasBirthday { get; set; }
+		public bool? unsubscribe { get; set; }
 		public List<string> statusHistry { get; set; }
-		public bool statusFirstTime { get; set; }
+		public bool? statusFirstTime { get; set; }
 		public List<UserId> friends { get; set; }
 		/// <value>Always Empty</value>
 		public List<string> friendGroupNames { get; set; }
 		public AvatarId currentAvatar { get; set; }
 		public string currentAvatarAssetUrl { get; set; }
 		public DateTime? accountDeletionDate { get; set; }
-		public int acceptedTOSVersion { get; set; }
+		public int? acceptedTOSVersion { get; set; }
 		public string steamId { get; set; }
 		public SteamDetails steamDetails { get; set; }
 		public string oculusId { get; set; }
-		public bool hasLoggedInFromClient { get; set; }
+		public bool? hasLoggedInFromClient { get; set; }
 		public string homeLocation { get; set; }
-		public bool twoFactorAuthEnabled { get; set; }
+		public bool? twoFactorAuthEnabled { get; set; }
 		public List<UserId> onlineFriends { get; set; }
 		public List<UserId> activeFriends { get; set; }
 		public List<UserId> offlineFriends { get; set; }
@@ -343,44 +343,15 @@ namespace VRChatAPI.Objects
 		/// <summary>
 		/// Update Current User Information
 		/// </summary>
-		/// <param name="email">Email Address</param>
-		/// <param name="birthday">Birthday</param>
-		/// <param name="acceptedTOSVersion">Last accepted Term of Service version</param>
-		/// <param name="tags">User Tags</param>
-		/// <param name="networkSessionId">Network session id, from Photon</param>
-		/// <param name="status">Current status</param>
-		/// <param name="statusDescription">The message seen in game with <paramref name="status"/></param>
-		/// <param name="bio">User Bio</param>
-		/// <param name="bioLinks">Bio Links</param>
+		/// <param name="to"><see cref="CurrentUser"/> object which this object will be updated to. Null fields will be ignored</param>
 		/// <returns>Updated Current User Info</returns>
 		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
-		public async Task<CurrentUser> UpdateUserInfo(
-			string email = null, 
-			DateTime? birthday = null, 
-			int? acceptedTOSVersion = null, 
-			List<string> tags = null,
-			UserStatus? status = null,
-			string statusDescription = null,
-			string bio = null,
-			List<string> bioLinks = null,
-			string userIcon = null)
+		public async Task<CurrentUser> Update(CurrentUser to)
 		{
 			Logger.LogDebug("Updating user info for {id}", id);
-
-			var p = new Dictionary<string, object>{
-				{ "email", email },
-				{ "birthday", birthday },
-				{ "acceptedTOSVersion", acceptedTOSVersion },
-				{ "tags", tags },
-				{ "status", status },
-				{ "statusDescription", statusDescription },
-				{ "bio", bio },
-				{ "bioLinks", bioLinks },
-				{ "userIcon", userIcon },
-			};
-
-			JObject json = JObject.FromObject(p.Where(v => !(v.Value is null)).ToDictionary(v => v.Key, v => v.Value));
-
+			var json = JsonConvert.SerializeObject(to, new JsonSerializerSettings(){
+				NullValueHandling = NullValueHandling.Ignore,
+			});
 			Logger.LogDebug("Prepared JSON to put: {json}", json);
 
 			StringContent content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");

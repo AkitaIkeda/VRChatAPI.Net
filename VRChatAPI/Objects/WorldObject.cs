@@ -170,54 +170,16 @@ namespace VRChatAPI.Objects
 		/// <summary>
 		/// Update world
 		/// </summary>
-		/// <param name="assetUrl">Asset url of the world</param>
-		/// <param name="imageUr">Image url of the thumbnail</param>
-		/// <param name="name">Name of the world</param>
-		/// <param name="assetVersion">Version of the asset</param>
-		/// <param name="authorName">Name of the author</param>
-		/// <param name="capacity">Instance capacity up to 40</param>
-		/// <param name="description">Description</param>
-		/// <param name="id">World id</param>
-		/// <param name="platform">Supported Platform</param>
-		/// <param name="releaseStatus">Resease status</param>
-		/// <param name="tags">World tags to apply</param>
-		/// <param name="unityPackageUrl">Unitypackage url</param>
-		/// <param name="unityVersion">Unity version</param>
-		/// <returns>World object</returns>
+		/// <param name="to"><see cref=" World"/> object which this object will be updated to. Null fields will be ignored.</param>
+		/// <returns>Updated World object</returns>
 		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
-		public async Task<World> Update(
-			string assetUrl = null,
-			string imageUr = null,
-			string name = null,
-			string assetVersion = null,
-			string authorName = null,
-			[Range(1, 40)] int? capacity = null,
-			string description = null,
-			WorldId id = null,
-			PlatformEnum? platform = null,
-			ReleaseStatus? releaseStatus = null,
-			List<string> tags = null,
-			string unityPackageUrl = null,
-			string unityVersion = null
-		)
+		public async Task<World> Update(World to)
 		{
-			var p = new Dictionary<string, object>{
-				{ "assetUrl", assetUrl },
-				{ "imageUr", imageUr },
-				{ "name", name },
-				{ "assetVersion", assetVersion },
-				{ "authorName", authorName },
-				{ "capacity", capacity },
-				{ "description", description },
-				{ "id", id },
-				{ "platform", platform },
-				{ "releaseStatus", releaseStatus },
-				{ "tags", tags },
-				{ "unityPackageUrl", unityPackageUrl },
-				{ "unityVersion", unityVersion },
-			};
-			Logger.LogDebug("update world {id}: {params}", id, Utils.UtilFunctions.MakeQuery(p, ", "));
-			var content = new StringContent(JObject.FromObject(p.Where(v => !(v.Value is null)).ToDictionary(v => v.Key, v => v.Value)).ToString(), Encoding.UTF8, "application/json");
+			var json = JsonConvert.SerializeObject(to, new JsonSerializerSettings(){
+				NullValueHandling = NullValueHandling.Ignore,
+			});
+			Logger.LogDebug("update world {id}: {params}", id, json);
+			var content = new StringContent(json.ToString(), Encoding.UTF8, "application/json");
 			var response = await Global.httpClient.PutAsync($"worlds/{id}", content);
 			return await Utils.UtilFunctions.ParseResponse<World>(response);
 		}

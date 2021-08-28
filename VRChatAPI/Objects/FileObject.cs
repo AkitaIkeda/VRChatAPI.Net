@@ -206,6 +206,13 @@ namespace VRChatAPI.Objects
 			return await Utils.UtilFunctions.ParseResponse<File>(response);
 		}
 
+		/// <summary>
+		/// Create and upload new version of the file
+		/// </summary>
+		/// <param name="s">IO.Stream that contains data to upload</param>
+		/// <param name="ct">Cancellation Token</param>
+		/// <returns>Updated File object</returns>
+		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		public async Task<File> CreateNewVersionAndUploadFile(Stream s, CancellationToken ct)
 		{
 			Logger.BeginScope("CreateNewVersionAndUploadFile");
@@ -297,6 +304,24 @@ namespace VRChatAPI.Objects
 			}
 			return f;
 		}
+
+		/// <summary>
+		/// Get Url that can be used for URL fields of objects.
+		/// </summary>
+		/// <param name="version">file version</param>
+		/// <param name="type">file type</param>
+		/// <returns>Url to the file</returns>
+		public string GetUrl(uint? version = null, FileType type = FileType.file) => 
+			$"{Global.APIUrl}file/{id}/{version ?? GetLatestVersionNum()}/{type.ToString()}";
+		
+		/// <summary>
+		/// Get Image Url that can be used for Image URL fields of objects.
+		/// </summary>
+		/// <param name="version">file version</param>
+		/// <param name="size">Image size</param>
+		/// <returns>Url to the image</returns>
+		public string GetImageUrl(uint? version = null, uint size = 256) => 
+			$"{Global.APIUrl}image/{id}/{version ?? GetLatestVersionNum()}/{size}";
 	}
 
 	internal static class UploadHelper

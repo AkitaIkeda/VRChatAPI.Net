@@ -129,7 +129,7 @@ namespace VRChatAPI
 			Global.httpClientHandler = handler;
 			Global.httpClient = new HttpClient(handler);
 			Global.httpClient.DefaultRequestHeaders.Add("User-Agent", "C# VRChat API Client");
-			Global.httpClient.BaseAddress = new Uri("https://vrchat.com/api/1/");
+			Global.httpClient.BaseAddress = new Uri(Global.APIUrl);
 			Logger.LogDebug($"VRChat API base address set to {Global.httpClient.BaseAddress}");
 		}
 		public async Task<Objects.CurrentUser> Login(string username, string password) => await UserAPI.Login(username, password);
