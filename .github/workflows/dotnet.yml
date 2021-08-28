@@ -41,6 +41,8 @@ jobs:
       with:
         path: nupkgs
         key: ${{ steps.key.outputs.KEY }}
+      env:
+        DOTNET_ROOT: /
 
 
   upload:
@@ -65,6 +67,8 @@ jobs:
       with:
         path: nupkgs
         key: ${{ needs.build.outputs.key }}
+      env:
+        DOTNET_ROOT: /
 
     - name: Nuget Push
       run:  dotnet nuget push nupkgs/*.nupkg -k ${{ secrets.NUGET_API_KEY }}  --source https://api.nuget.org/v3/index.json --skip-duplicate
