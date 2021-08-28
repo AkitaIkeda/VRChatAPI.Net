@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DOTNET_NOLOGO: true
+    
+    outputs:
+      key: ${{ steps.key.outputs.KEY }}
 
     steps:
     - uses: actions/checkout@v2
@@ -49,10 +52,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Create Key
-      run: echo '::set-output name=KEY::${{ hashFiles('**/*.cs') }}'
-      id: key
-
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -65,7 +64,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: nupkgs
-        key: ${{ steps.key.outputs.KEY }}
+        key: ${{ needs.build.outputs.key }}
 
     - name: Nuget Push
       run:  dotnet nuget push nupkgs/*.nupkg -k ${{ secrets.NUGET_API_KEY }}  --source https://api.nuget.org/v3/index.json --skip-duplicate
