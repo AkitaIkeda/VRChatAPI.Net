@@ -17,6 +17,7 @@ namespace VRChatAPI.Utils{
 			if(!r.IsSuccessStatusCode)
 				Logger.LogError("Response status code was not 'success' {response}", await r.Content.ReadAsStringAsync());
 			if(r.StatusCode == HttpStatusCode.Unauthorized){
+				Global.IsLoggedIn = false;
 				throw new UnauthorizedRequestException(await r.Content.ReadAsStringAsync());
 			}
 			if(!r.IsSuccessStatusCode){

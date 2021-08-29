@@ -151,5 +151,6 @@ namespace VRChatAPI
 		public async Task<Objects.CurrentUser> Login(string username, string password) => await UserAPI.Login(username, password);
 		public async Task<(bool ok, string token)> VerifyAuth() => await UserAPI.VerifyAuth();
 		public ConfigResponse RemoteConfig => Global.RemoteConfig;
+		public bool IsLoggedIn => Global.IsLoggedIn;
 	}
 }

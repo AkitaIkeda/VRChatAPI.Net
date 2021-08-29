@@ -26,6 +26,7 @@ namespace VRChatAPI.Endpoints
 		public async Task<CurrentUser> Login(){
 			Logger.LogDebug("Getting current user details");
 			HttpResponseMessage response = await Global.httpClient.GetAsync($"auth/user");
+			Global.IsLoggedIn = true;
 			return await Utils.UtilFunctions.ParseResponse<CurrentUser>(response);
 		}
 		/// <summary>
@@ -256,6 +257,7 @@ namespace VRChatAPI.Endpoints
 		{
 			Logger.LogDebug("Verifying Auth");
 			var response = await Global.httpClient.GetAsync("auth");
+			Global.IsLoggedIn = true;
 			return await Utils.UtilFunctions.ParseResponse<(bool ok, string token)>(response);
 		}
 
