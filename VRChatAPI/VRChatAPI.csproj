@@ -10,7 +10,7 @@
     <PackageId>VRChatAPI.Net</PackageId>
     <Company>mueru</Company>
     <Authors>mueru</Authors>
-    <Description>VRChat API Wrapper for dotnet written in .Net Core 3.1</Description>
+    <Description>VRChat API Wrapper for dotnet written in .Net Standard 2.0</Description>
     <Copyright>Copyright © 2021 mueru</Copyright>
     <Product>VRChatAPI.Net</Product>
   </PropertyGroup>
