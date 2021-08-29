@@ -44,14 +44,14 @@ namespace TestClient
 			var files = await api.FileAPI.Search();
 
 			// File upload test
-			var f = (await api.FileAPI.Search(tag: "test")).FirstOrDefault();
-			f ??= await api.FileAPI.Create("test", MimeType.image_png, ".png", new List<string>(){"test"});
-			using (var s = System.IO.File.OpenRead("res/test.png"))
-			{
-				var c = new CancellationTokenSource();
-				f = await f.CreateNewVersionAndUploadFile(s, c.Token);
-			}
-			await f.id.Delete();
+			// var f = (await api.FileAPI.Search(tag: "test")).FirstOrDefault();
+			// f ??= await api.FileAPI.Create("test", MimeType.image_png, ".png", new List<string>(){"test"});
+			// using (var s = System.IO.File.OpenRead("res/test.png"))
+			// {
+			// 	var c = new CancellationTokenSource();
+			// 	f = await f.CreateNewVersionAndUploadFile(s, c.Token);
+			// }
+			// await f.id.Delete();
 
 			Console.ReadKey();
 		}

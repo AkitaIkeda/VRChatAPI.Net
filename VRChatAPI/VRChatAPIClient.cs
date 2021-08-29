@@ -41,10 +41,10 @@ namespace VRChatAPI
 		/// Instantiate VRChatApi client without auth
 		/// </summary>
 		/// <remarks>You will need to Login first in order to call most of methods
-		private VRChatAPIClient(){
+		public VRChatAPIClient(){
 			Logger.LogDebug($"Entering {nameof(VRChatAPIClient)} constructor with no args");
 			initEndpoints();
-			initHttpClient(new CookieContainer());
+			initHttpClient(null);
 		}
 		
 		/// <summary>
@@ -112,7 +112,7 @@ namespace VRChatAPI
 		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		private async Task initHttpClient(string username, string password)
 		{
-			initHttpClient(new CookieContainer());
+			initHttpClient(null);
 			await Login(username, password);
 		}
 		
@@ -122,10 +122,16 @@ namespace VRChatAPI
 		/// <param name="c">CookieContainer that has "auth" and "apiKey"</param>
 		private void initHttpClient(CookieContainer c){
 			Logger.LogDebug($"Initializing {nameof(HttpClient)}");
-			var handler = new CustomHttpClientHandler {
-				CookieContainer = c,
-				UseCookies = true,
-			};
+			CustomHttpClientHandler handler;
+			if(c is null)
+				handler = new CustomHttpClientHandler {
+					UseCookies = true,
+				};
+			else
+				handler = new CustomHttpClientHandler {
+					CookieContainer = c,
+					UseCookies = true,
+				};
 			Global.httpClientHandler = handler;
 			Global.httpClient = new HttpClient(handler);
 			Global.httpClient.DefaultRequestHeaders.Add("User-Agent", "C# VRChat API Client");
