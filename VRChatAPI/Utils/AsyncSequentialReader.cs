@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace VRChatAPI.Utils
 {
-	public class AsyncSequentialReader<T> : IAsyncEnumerable<T>
+	public class SequentialReader<T> : IEnumerable<T>
 	{
-		public delegate Task<IEnumerable<T>> ReadFunc(uint offset, uint n);
+		public delegate IEnumerable<T> ReadFunc(uint offset, uint n);
 
-		private ReadFunc reader;
+		protected ReadFunc reader;
 		public uint bufferSize { get; set; }
 
 		/// <summary>
@@ -18,17 +18,17 @@ namespace VRChatAPI.Utils
 		/// </summary>
 		/// <param name="f">Read function</param>
 		/// <param name="buffer">Buffer size</param>
-		public AsyncSequentialReader(ReadFunc f, [Range(1, 100)] uint buffer = 100)
+		public SequentialReader(ReadFunc f, [Range(1, 100)] uint buffer = 100)
 		{
 			reader = f;
 			bufferSize = buffer;
 		}
 
-		public async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+		public IEnumerator<T> GetEnumerator()
 		{
 			uint i = 0;
 			while (true){
-				var ret = await reader(i, bufferSize);
+				var ret = reader(i, bufferSize);
 				var c = 0;
 				foreach (var item in ret)
 				{
@@ -42,5 +42,20 @@ namespace VRChatAPI.Utils
 				i += bufferSize;
 			}
 		}
+
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+	}
+
+	public class AsyncSequentialReader<T> : SequentialReader<T>
+	{
+		public delegate Task<IEnumerable<T>> AsyncReadFunc(uint offset, uint n);
+
+		/// <summary>
+		/// Constructs a new AsyncSequentialReader
+		/// </summary>
+		/// <param name="f">Read function</param>
+		/// <param name="buffer">Buffer size</param>
+		public AsyncSequentialReader(ReadFunc f, [Range(1, 100)] uint buffer = 100) : base(f, buffer) {}
+		public AsyncSequentialReader(AsyncReadFunc f, [Range(1, 100)] uint buffer = 100) : base((uint offset, uint n) => f(offset, n).Result, buffer){}
 	}
 }

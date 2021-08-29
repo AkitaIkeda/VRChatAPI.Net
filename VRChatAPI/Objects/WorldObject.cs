@@ -113,7 +113,7 @@ namespace VRChatAPI.Objects
 
 		public override bool CanParse(string s)
 		{
-			var t = s.Split("_");
+			var t = s.Split('_');
 			return t.Length >= 2 && Prefixes.Contains(t[0]);
 		}
 
@@ -217,7 +217,7 @@ namespace VRChatAPI.Objects
 		/// <exception cref="Exceptions.UnauthorizedRequestException">
 		public async Task UnPublish()
 		{
-			Logger.LogDebug("Unpublishing world {id}", id);
+			Logger.LogDebug("UnPublishing world {id}", id);
 			await Global.httpClient.DeleteAsync($"worlds/{id}/publish");
 		}
 	}

@@ -49,7 +49,7 @@ namespace TestClient
 			using (var s = System.IO.File.OpenRead("res/test.png"))
 			{
 				var c = new CancellationTokenSource();
-				var t = await f.CreateNewVersionAndUploadFile(s, c.Token);
+				f = await f.CreateNewVersionAndUploadFile(s, c.Token);
 			}
 			await f.id.Delete();
 

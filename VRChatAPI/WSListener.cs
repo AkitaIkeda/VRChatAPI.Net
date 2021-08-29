@@ -9,6 +9,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using VRChatAPI.Objects;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace VRChatAPI
 {
@@ -94,75 +95,78 @@ namespace VRChatAPI
 		{
 			Logger.LogDebug("Start Listenning to websocket pipeline");
 
-			logging ??= (EventHandler) (m => Logger.LogInformation(JObject.FromObject(m).ToString()));
+			if(logging is null)
+				logging = (EventHandler) (m => Logger.LogInformation(JObject.FromObject(m).ToString()));
 			if(!(logging is null)) OnEvent += logging;
 
-			using var ws = new ClientWebSocket();
-			await ws.ConnectAsync(new Uri($"wss://pipeline.vrchat.cloud/?authToken={authToken}"), ct);
-
-			var buffer = new Memory<byte>(new byte[0x10000]);
-			while (!ct.IsCancellationRequested)
+			using(var ws = new ClientWebSocket())
 			{
-				var r = await ws.ReceiveAsync(buffer, ct);
-				var message = JsonConvert.DeserializeObject<EventMessage>(Encoding.UTF8.GetString(buffer.ToArray()));
-				
-				OnEvent(message);
-				JObject content;
-				switch (message.type)
+				await ws.ConnectAsync(new Uri($"wss://pipeline.vrchat.cloud/?authToken={authToken}"), ct);
+
+				var buffer = new ArraySegment<byte>(new byte[0x10000]);
+				while (!ct.IsCancellationRequested)
 				{
-					case EventTypes.SeeNotification:
-					case EventTypes.HideNotification:
-						content = default(JObject);
-						break;
-					default:
-						content = JObject.Parse(message.content);
-						break;
-				}
-				switch (message.type)
-				{
-					case EventTypes.FriendOnline:
-						OnFriendOnline(content["user"].ToObject<User>());
-						break;
-					case EventTypes.FriendOffline:
-						OnFriendOffline(content["userId"].ToObject<UserId>());
-						break;
-					case EventTypes.FriendActive:
-						OnFriendActive(content["user"].ToObject<User>());
-						break;
-					case EventTypes.FriendAdd:
-						OnFriendAdd(content["user"].ToObject<User>());
-						break;
-					case EventTypes.FriendDelete:
-						OnFriendDelete(content["userId"].ToObject<UserId>());
-						break;
-					case EventTypes.FriendUpdate:
-						OnFriendUpdate(content["user"].ToObject<User>());
-						break;
-					case EventTypes.FriendLocation:
-						OnFriendLocation(
-							content["user"].ToObject<User>(), 
-							content["world"].ToObject<World>(),
-							content["location"].ToObject<Location>(),
-							((bool)content["canRequestInvite"]));
-						break;
-					case EventTypes.Notification:
-						OnNotification(content.ToObject<Notification>());
-						break;
-					case EventTypes.SeeNotification:
-						OnSeeNotification(message.content);
-						break;
-					case EventTypes.HideNotification:
-						OnHideNotification(message.content);
-						break;
-					case EventTypes.ClearNotification:
-						OnClearNotification();
-						break;
-					case EventTypes.UserUpdate:
-						OnUserUpdate(content["user"].ToObject<CurrentUser>());
-						break;
-					default:
-						Logger.LogError($"Unknown event type");
-						break;
+					var r = await ws.ReceiveAsync(buffer, ct);
+					var message = JsonConvert.DeserializeObject<EventMessage>(Encoding.UTF8.GetString(buffer.ToArray()));
+					
+					OnEvent(message);
+					JObject content;
+					switch (message.type)
+					{
+						case EventTypes.SeeNotification:
+						case EventTypes.HideNotification:
+							content = default(JObject);
+							break;
+						default:
+							content = JObject.Parse(message.content);
+							break;
+					}
+					switch (message.type)
+					{
+						case EventTypes.FriendOnline:
+							OnFriendOnline(content["user"].ToObject<User>());
+							break;
+						case EventTypes.FriendOffline:
+							OnFriendOffline(content["userId"].ToObject<UserId>());
+							break;
+						case EventTypes.FriendActive:
+							OnFriendActive(content["user"].ToObject<User>());
+							break;
+						case EventTypes.FriendAdd:
+							OnFriendAdd(content["user"].ToObject<User>());
+							break;
+						case EventTypes.FriendDelete:
+							OnFriendDelete(content["userId"].ToObject<UserId>());
+							break;
+						case EventTypes.FriendUpdate:
+							OnFriendUpdate(content["user"].ToObject<User>());
+							break;
+						case EventTypes.FriendLocation:
+							OnFriendLocation(
+								content["user"].ToObject<User>(), 
+								content["world"].ToObject<World>(),
+								content["location"].ToObject<Location>(),
+								((bool)content["canRequestInvite"]));
+							break;
+						case EventTypes.Notification:
+							OnNotification(content.ToObject<Notification>());
+							break;
+						case EventTypes.SeeNotification:
+							OnSeeNotification(message.content);
+							break;
+						case EventTypes.HideNotification:
+							OnHideNotification(message.content);
+							break;
+						case EventTypes.ClearNotification:
+							OnClearNotification();
+							break;
+						case EventTypes.UserUpdate:
+							OnUserUpdate(content["user"].ToObject<CurrentUser>());
+							break;
+						default:
+							Logger.LogError($"Unknown event type");
+							break;
+					}
 				}
 			}
 		}

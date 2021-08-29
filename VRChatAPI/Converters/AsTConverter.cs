@@ -12,7 +12,7 @@ namespace VRChatAPI.Converters
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 		{
 			var t = serializer.Deserialize<T>(reader);
-			if(t is null) return null;
+			if(t == null) return null;
 			return typeof(T).GetCastFunction(objectType).Invoke(null, new object[]{t});
 		}
 

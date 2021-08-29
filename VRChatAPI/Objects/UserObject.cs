@@ -290,11 +290,11 @@ namespace VRChatAPI.Objects
 
 		public IEnumerable<string> GetLanguages() => tags
 			.Where(t => t.IndexOf("langage_") == 0)
-			.Select(v => v[("langage_".Length)..]);
+			.Select(v => v.Substring("langage_".Length));
 		
 		public IEnumerable<string> GetAuthorTags() => tags
 			.Where(t => t.IndexOf("author_tag_") == 0)
-			.Select(t => t[("author_tag_".Length)..]);
+			.Select(t => t.Substring("author_tag_".Length));
 	}
 
 	public class User : LimitedUser

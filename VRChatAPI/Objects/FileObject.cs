@@ -185,7 +185,8 @@ namespace VRChatAPI.Objects
 		public async Task<Stream> Download(uint? version = null)
 		{
 			Logger.LogDebug("Download {id} v{version}", id, version);
-			version ??= GetLatestVersionNum();
+			if(version == null)
+				version = GetLatestVersionNum();
 			var response = await Global.httpClient.GetAsync($"file/{id}/{version}");
 			return await response.Content.ReadAsStreamAsync();
 		}
@@ -224,7 +225,7 @@ namespace VRChatAPI.Objects
 			if(!s.CanSeek){
 				Stream ts = new MemoryStream();
 				await s.CopyToAsync(ts);
-				_ = s.DisposeAsync();
+				s.Dispose();
 				s = ts;
 			}
 
@@ -256,7 +257,7 @@ namespace VRChatAPI.Objects
 				uploadDelta = DeltaEnabled && deltaSize < fileSize;
 				if(uploadDelta)
 				{
-					_ = file.DisposeAsync();
+					file.Dispose();
 					file = delta;
 					fileSize = deltaSize;
 					fileMd5 = delta.GetMD5();
@@ -408,7 +409,7 @@ namespace VRChatAPI.Objects
 		{
 			var sigUrl = f.GetVersion(f.GetLatestVersionNum()).signature.url;
 			var response = await Global.httpClient.GetAsync(sigUrl);
-			await using(var prevSignature = await response.Content.ReadAsStreamAsync())
+			var prevSignature = await response.Content.ReadAsStreamAsync();
 			return ComputeDelta(s, prevSignature);
 		}
 		public static string GetMD5(this Stream s) => Convert.ToBase64String(MD5.Create().ComputeHash(s));
