@@ -10,14 +10,11 @@ namespace VRChatAPI
     {
 		internal static readonly string APIUrl = "https://api.vrchat.cloud/api/1/";
 		internal static HttpClient httpClient;
-        internal static HttpClientHandler httpClientHandler;
 		internal static ILoggerFactory LoggerFactory = Microsoft.Extensions.Logging.LoggerFactory.Create(
             builder => {
             }
         );
 
 		internal static ConfigResponse RemoteConfig;
-
-		internal static CookieContainer CookieContainer => httpClientHandler.CookieContainer;
     }
 }

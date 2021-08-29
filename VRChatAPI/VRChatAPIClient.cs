@@ -24,9 +24,6 @@ namespace VRChatAPI
 		
 		private static ILogger Logger => LoggerFactory.CreateLogger<VRChatAPIClient>();
 		
-		public HttpClientHandler HttpClientHandler => Global.httpClientHandler;
-		public CookieContainer CookieContainer => HttpClientHandler.CookieContainer;
-
 		public SystemAPI SystemAPI { get; private set; }
 		public UserAPI UserAPI { get; private set; }
 		public WorldAPI WorldAPI { get; private set; }
@@ -44,7 +41,7 @@ namespace VRChatAPI
 		public VRChatAPIClient(){
 			Logger.LogDebug($"Entering {nameof(VRChatAPIClient)} constructor with no args");
 			initEndpoints();
-			initHttpClient(null);
+			initHttpClient(c: null);
 		}
 		
 		/// <summary>
@@ -72,6 +69,16 @@ namespace VRChatAPI
 			initHttpClient(cookie);
 			VerifyAuth().Wait();
 			postInitAsync().Wait();
+		}
+		/// <summary>
+		/// Instantiate VRChatApi client with Custom HttpClientHandler
+		/// </summary>
+		/// <param name="handler"></param>
+		public VRChatAPIClient(VRCAPIHttpClientHandler handler)
+		{
+			Logger.LogDebug($"Entering {nameof(VRChatAPIClient)} constructor with ClientHandler");
+			preInit();
+			initHttpClient(handler);
 		}
 
 		private void preInit(){
@@ -112,7 +119,7 @@ namespace VRChatAPI
 		/// <exception cref="Exceptions.UnauthorizedRequestException"/>
 		private async Task initHttpClient(string username, string password)
 		{
-			initHttpClient(null);
+			initHttpClient(c: null);
 			await Login(username, password);
 		}
 		
@@ -122,17 +129,20 @@ namespace VRChatAPI
 		/// <param name="c">CookieContainer that has "auth" and "apiKey"</param>
 		private void initHttpClient(CookieContainer c){
 			Logger.LogDebug($"Initializing {nameof(HttpClient)}");
-			CustomHttpClientHandler handler;
+			VRCAPIHttpClientHandler handler;
 			if(c is null)
-				handler = new CustomHttpClientHandler {
+				handler = new VRCAPIHttpClientHandler {
 					UseCookies = true,
 				};
 			else
-				handler = new CustomHttpClientHandler {
+				handler = new VRCAPIHttpClientHandler {
 					CookieContainer = c,
 					UseCookies = true,
 				};
-			Global.httpClientHandler = handler;
+			initHttpClient(handler);
+		}
+		private void initHttpClient(VRCAPIHttpClientHandler handler){
+			Logger.LogDebug($"Initializing {nameof(HttpClient)}");
 			Global.httpClient = new HttpClient(handler);
 			Global.httpClient.DefaultRequestHeaders.Add("User-Agent", "C# VRChat API Client");
 			Global.httpClient.BaseAddress = new Uri(Global.APIUrl);

@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 using VRChatAPI.Exceptions;
 
 namespace VRChatAPI.Utils{
-	internal class CustomHttpClientHandler : HttpClientHandler
+	public class VRCAPIHttpClientHandler : HttpClientHandler
 	{
-		private static ILogger Logger => Global.LoggerFactory.CreateLogger<CustomHttpClientHandler>();
+		protected static ILogger Logger => Global.LoggerFactory.CreateLogger<VRCAPIHttpClientHandler>();
 
 		protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 		{
