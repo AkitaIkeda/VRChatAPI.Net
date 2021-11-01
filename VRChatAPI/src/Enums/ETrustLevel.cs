@@ -5,8 +5,8 @@
 		Visitor,
 		NewUser,
 		User,
-		KnownUser,
-		TrustedUser,
+		Known,
+		Trusted,
 		Veteran, // Unused
 		Legend, // Unused
 	}
