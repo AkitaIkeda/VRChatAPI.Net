@@ -6,10 +6,10 @@ using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Serialization
 {
-	public class VRCIDConverter : JsonConverterFactory
+	public class ObjectAsStringConverter : JsonConverterFactory
 	{
 		public override bool CanConvert(Type typeToConvert) =>
-			typeToConvert.GetInterface(nameof(IParsableID)) != null 
+			typeToConvert.GetInterface(nameof(IParsable)) != null 
 			&& typeToConvert.GetConstructor(Type.EmptyTypes) != null;
 
 		public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions _) =>
@@ -17,7 +17,7 @@ namespace VRChatAPI.Serialization
 				typeof(VRCIDConverterInner<>).MakeGenericType(
 					new Type[] { typeToConvert }));
 
-		private class VRCIDConverterInner<T> : JsonConverter<T> where T : IParsableID, new()
+		private class VRCIDConverterInner<T> : JsonConverter<T> where T : IParsable, new()
 		{
 			public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions _)
 			{
@@ -29,7 +29,8 @@ namespace VRChatAPI.Serialization
 			}
 
 			public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions _) => 
-				writer.WriteStringValue(value.GetIDString());
+				((JsonConverter<string>)_.GetConverter(typeof(string))).Write(writer, value.ToString(), _);
+				// writer.WriteStringValue(value.ToString());
 		}
 	}
 }

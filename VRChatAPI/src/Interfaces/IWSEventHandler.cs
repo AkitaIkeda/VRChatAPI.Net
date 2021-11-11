@@ -1,4 +1,5 @@
-﻿using static VRChatAPI.Objects.EventHandlerDelegates;
+﻿using System;
+using static VRChatAPI.Objects.EventHandlerDelegates;
 
 namespace VRChatAPI.Interfaces
 {
@@ -17,6 +18,7 @@ namespace VRChatAPI.Interfaces
 		event HideNotificationEventHandler OnHideNotification;
 		event ClearNotificationEventHandler OnClearNotification;
 		event UserUpdateEventHandler OnUserUpdate;
+		event EventHandler OnStopHandling;
 
 		void StartHandling(ITokenCredential cred);
 		void StopHandling();

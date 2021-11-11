@@ -4,7 +4,7 @@ using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class Moderation : IModeration
+	public class Moderation : SerializableObjectAbstract, IModeration
 	{
 		public ModerationID Id { get; set; }
 		public EModerationType? Type { get; set; }

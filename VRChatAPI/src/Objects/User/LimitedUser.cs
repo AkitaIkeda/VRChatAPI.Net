@@ -5,7 +5,7 @@ using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class LimitedUser : IUser
+	public class LimitedUser : SerializableObjectAbstract, IUser
 	{
 		public UserID Id { get; set; }
 		public string Username { get; set; }
@@ -17,12 +17,12 @@ namespace VRChatAPI.Objects
 		public VRCFilePath CurrentAvatarImageUrl { get; set; }
 		public VRCImagePath CurrentAvatarThumbnailImageUrl { get; set; }
 		public AvatarID FallbackAvatar { get; set; }
-		public EDeveloperType DeveloperType { get; set; }
+		public EDeveloperType? DeveloperType { get; set; }
 		[JsonPropertyName("last_platform")]
-		public EPlatform LastPlatform{ get; set; }
-		public EUserState Status { get; set; }
-		public bool IsFriend { get; set; }
-		public Location Location { get; set; } // If empty, User is not in the game.
+		public EPlatform? LastPlatform{ get; set; }
+		public EUserState? Status { get; set; }
+		public bool? IsFriend { get; set; }
+		public string Location { get; set; } // If empty, User is not in the game.
 		public IEnumerable<string> Tags { get; set; }
 
 		public string GetIDString(int prefixIndex = 0) =>

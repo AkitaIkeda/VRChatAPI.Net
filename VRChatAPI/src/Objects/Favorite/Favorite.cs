@@ -4,7 +4,7 @@ using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class Favorite : IFavorite
+	public class Favorite : SerializableObjectAbstract, IFavorite
 	{
 		public FavoriteID Id { get; set; }
 		public EFavoriteType? Type { get; set; }

@@ -4,7 +4,7 @@ using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class VRCFile : IVRCFile
+	public class VRCFile : SerializableObjectAbstract, IVRCFile
 	{
 		public VRCFileID Id { get; set; }
 		public string Name { get; set; }

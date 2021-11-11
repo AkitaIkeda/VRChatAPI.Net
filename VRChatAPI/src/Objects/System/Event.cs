@@ -1,6 +1,8 @@
-﻿namespace VRChatAPI.Objects
+﻿using VRChatAPI.Interfaces;
+
+namespace VRChatAPI.Objects
 {
-	public class Event
+	public class Event : SerializableObjectAbstract
 	{
 		public int DistanceClose { get; set; }
 		public int DistanceFactor { get; set; }

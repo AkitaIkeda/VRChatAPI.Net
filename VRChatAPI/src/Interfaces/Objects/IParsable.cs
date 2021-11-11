@@ -1,6 +1,6 @@
 ﻿namespace VRChatAPI.Interfaces
 {
-	public interface IParsableID : IVRCObject
+	public interface IParsable
 	{
 		void ParseFromString(string id);
 	}

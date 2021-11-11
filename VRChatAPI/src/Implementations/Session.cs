@@ -4,47 +4,47 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using System;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
-using VRChatAPI.Extentions.DependancyInjection;
+using VRChatAPI.Extentions.DependencyInjection;
 using VRChatAPI.Interfaces;
 using VRChatAPI.Logging;
 using VRChatAPI.Objects;
 
 namespace VRChatAPI.Implementations
 {
-	public partial class Session : ISession, IDisposable
+	public partial class Session : ISession
 	{
-		private readonly IServiceScope serviceScope;
-		private IServiceProvider serviceProvider => serviceScope.ServiceProvider;
-		private readonly IAPIHttpClient client;
 		private readonly APIConfig remoteConfig;
-		private readonly IWSEventHandler eventHandler;
 		private readonly ILogger logger;
+		private readonly IAPIHttpClient client;
+		private readonly IWSEventHandler eventHandler;
 		private readonly IOptions<VRCAPIOptions> options;
 		private LoginInfo loginInfo;
 		private JsonSerializerOptions serializerOption => options.Value.SerializerOption;
 
-		public Session(IServiceScope serviceScope, ICredential cred)
+		public Session(
+			IAPIHttpClient client,
+			IWSEventHandler eventHandler,
+			IOptions<VRCAPIOptions> options,
+			ILogger<Session> logger)
 		{
-			this.serviceScope = serviceScope;
-			logger = (ILogger)serviceProvider.GetRequiredService<ILogger<Session>>() ?? NullLogger.Instance;
+			this.logger = (ILogger)logger ?? NullLogger.Instance;
 			logger.LogInformation(LogEventID.SystemInitialize, "Initializing.");
-			options = serviceProvider.GetRequiredService<IOptions<VRCAPIOptions>>();
-			client = serviceProvider.GetRequiredService<IAPIHttpClient>();
+			this.client = client;
+			this.eventHandler = eventHandler;
+			this.options = options;
+			
 			var tr = GetAPIConfig();
-			var tc = cred.Login(client, options.Value.SerializerOption);
-			Task.WaitAll(tr, tc);
 			remoteConfig = tr.Result;
-			loginInfo = tc.Result;
-			if (loginInfo.TFARequired)
-				logger.LogInformation(LogEventID.SystemInitialize, "Login process is not finished. You need to verify with 2FA.");
-			else
-				logger.LogInformation(LogEventID.SystemInitialize, "Loged into {CurrentUser}", loginInfo.User);
-			eventHandler = serviceProvider.GetRequiredService<IWSEventHandler>();
+
+			eventHandler.OnUserUpdate += UpdateUserInfo;
 		}
 
+		private void UpdateUserInfo(CurrentUser user) => loginInfo.User = user;
+
 		#region interface implementations
-		public bool HandlingWSEvents => !(eventHandler is null);
+		public bool HandlingWSEvents => eventHandler.IsHandling;
 
 		public IWSEventHandler EventHandler => eventHandler;
 		public IAPIHttpClient APIHttpClient => client;
@@ -56,11 +56,15 @@ namespace VRChatAPI.Implementations
 
 		public APIConfig RemoteConfig => remoteConfig;
 
-		public void Dispose()
-		{
-			logger.LogInformation(LogEventID.SystemDispose, "Disposing.");
-			serviceScope.Dispose();
-		}
+		public void StartWSEventHandling() => 
+			EventHandler.StartHandling(Credential);
+
+		public void StopWSEventHandling() => 
+			EventHandler.StopHandling();
+
+		public async Task<LoginInfo> Login(ICredential credential, CancellationToken ct = default) => 
+			loginInfo = await credential.Login(this.client, serializerOption, ct);
+
 		#endregion
 	}
 }

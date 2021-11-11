@@ -2,7 +2,7 @@
 using System.Text.Json;
 using VRChatAPI.Logging;
 
-namespace VRChatAPI.Extentions
+namespace VRChatAPI.Utils
 {
 	internal static class JsonUtilityExtensions
 	{

@@ -1,4 +1,6 @@
-﻿using VRChatAPI.Objects;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using VRChatAPI.Objects;
 
 namespace VRChatAPI.Interfaces
 {
@@ -7,12 +9,14 @@ namespace VRChatAPI.Interfaces
 		IAvatarAPI, IWorldAPI, IFavoriteAPI, INotificationAPI,
 		IFileAPI, IModerationAPI, IPermissionAPI
 	{
-		bool HandlingWSEvents { get; }
 		bool TFARequired { get; }
 		IWSEventHandler EventHandler { get; }
 		ITokenCredential Credential { get; }
 		IAPIHttpClient APIHttpClient { get; }
 		CurrentUser User { get; }
 		APIConfig RemoteConfig { get; }
+		void StartWSEventHandling();
+		void StopWSEventHandling();
+		Task<LoginInfo> Login(ICredential credential, CancellationToken ct = default);
 	}
 }

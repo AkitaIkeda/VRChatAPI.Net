@@ -1,8 +1,9 @@
 ﻿using VRChatAPI.Enums;
+using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class NotificationDetail
+	public class NotificationDetail : SerializableObjectAbstract
 	{
 		public Location WorldId { get; set; }
 		public EPlatform? Platform { get; set; }

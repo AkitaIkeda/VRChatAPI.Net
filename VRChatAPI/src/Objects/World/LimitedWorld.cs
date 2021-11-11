@@ -6,7 +6,7 @@ using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class LimitedWorld : IWorld
+	public class LimitedWorld : SerializableObjectAbstract, IWorld
 	{
 		public WorldID Id { get; set; }
 		public string Name { get; set; }

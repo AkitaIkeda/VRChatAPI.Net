@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json;
+using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
@@ -13,19 +15,19 @@ namespace VRChatAPI.Objects
 		public bool? EmailVerified { get; set; }
 		public bool? HasBirthday { get; set; }
 		public bool? Unsubscribe { get; set; }
-		public IEnumerable<string> StatusHistry { get; set; }
+		public IEnumerable<string> StatusHistory { get; set; }
 		public bool? StatusFirstTime { get; set; }
 		public IEnumerable<UserID> Friends { get; set; }
 		public IEnumerable<string> FriendGroupNames { get; set; }
 		public AvatarID CurrentAvatar { get; set; }
-		public string CurrentAvatarAssetUrl { get; set; }
+		public VRCFilePath CurrentAvatarAssetUrl { get; set; }
 		public DateTime? AccountDeletionDate { get; set; }
-		public int? AcceptedTosVersion { get; set; }
+		public int? AcceptedTOSVersion { get; set; }
 		public string SteamId { get; set; }
-		public string SteamDetails { get; set; }
+		public JsonElement? SteamDetails { get; set; }
 		public string OculusId { get; set; }
 		public bool? HasLoggedInFromClient { get; set; }
-		public string HomeLocation { get; set; }
+		public WorldID HomeLocation { get; set; }
 		public bool? TwoFactorAuthEnabled { get; set; }
 		public IEnumerable<UserID> OnlineFriends { get; set; }
 		public IEnumerable<UserID> ActiveFriends { get; set; }

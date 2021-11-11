@@ -5,7 +5,7 @@ using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class Notification : INotification
+	public class Notification : SerializableObjectAbstract, INotification
 	{
 		public NotificationID Id { get; set; }
 		public UserID SenderUserId { get; set; }

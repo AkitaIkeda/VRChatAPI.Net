@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 using VRChatAPI.Enums;
+using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class UnityPackage
+	public class UnityPackage : SerializableObjectAbstract
 	{
 		public string Id { get; set; }
 		public string AssetUrl { get; set; }

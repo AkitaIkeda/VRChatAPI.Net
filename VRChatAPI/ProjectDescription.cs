@@ -1,4 +1,7 @@
-﻿namespace VRChatAPI
+﻿using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("VRChatAPI.Tests")]
+namespace VRChatAPI
 {
 	internal static class ProjectDescription
 	{

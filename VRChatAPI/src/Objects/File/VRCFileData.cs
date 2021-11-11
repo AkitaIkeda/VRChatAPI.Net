@@ -1,8 +1,9 @@
 ﻿using VRChatAPI.Enums;
+using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class VRCFileData
+	public class VRCFileData : SerializableObjectAbstract
 	{
 		public EFileCategory Category { get; set; }
 		public string FileName { get; set; }

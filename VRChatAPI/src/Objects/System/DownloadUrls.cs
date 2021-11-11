@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class DownloadUrls
+	public class DownloadUrls : SerializableObjectAbstract
 	{
 		public string Sdk2 { get; set; }
 		[JsonPropertyName("sdk3-worlds")]

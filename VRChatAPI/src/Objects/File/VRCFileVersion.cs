@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 using VRChatAPI.Enums;
+using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class VRCFileVersion
+	public class VRCFileVersion : SerializableObjectAbstract
 	{
 		[JsonPropertyName("created_at")]
 		public DateTime CreatedAt { get; set; }

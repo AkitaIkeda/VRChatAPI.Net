@@ -1,6 +1,8 @@
-﻿namespace VRChatAPI.Objects
+﻿using VRChatAPI.Interfaces;
+
+namespace VRChatAPI.Objects
 {
-	public class Announcement
+	public class Announcement : SerializableObjectAbstract
 	{
 		/// <summary>
 		/// Announcement Name

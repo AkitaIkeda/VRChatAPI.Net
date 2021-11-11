@@ -5,9 +5,8 @@ using VRChatAPI.Enums;
 
 namespace VRChatAPI.Extentions
 {
-	public static class TagsUtilExtensions
+	public static class TagsUtilities
 	{
-		// TODO: Implement Tags Util
 		[Flags]
 		private enum TrustLevel : uint
 		{

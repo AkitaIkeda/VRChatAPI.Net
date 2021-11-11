@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using VRChatAPI.Enums;
+using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class DynamicWorldRow
+	public class DynamicWorldRow : SerializableObjectAbstract
 	{
 		/// <summary>
 		/// Name of row

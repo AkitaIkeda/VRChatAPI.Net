@@ -17,19 +17,23 @@ namespace VRChatAPI.Serialization
 			var s = reader.GetString();
 			Console.WriteLine(s);
 			var r = new ResponseMessage();
-			var t = JsonSerializer.Deserialize<JsonElement>(ref reader, options);
+			var t = JsonSerializer.Deserialize<ResponseMessageInstance>(ref reader, options);
 			if(!Enum.TryParse<EResponseType>(s, out var ty))
 				throw new JsonException();
 			r.MessageType = ty;
-			r.Message = t.GetProperty("message").GetString();
-			r.StatusCode = t.GetProperty("status_code").GetInt32();
+			r.Message = t.Message;
+			r.StatusCode = t.StatusCode;
 			reader.Read();
 			return r;
 		}
 
 		public override void Write(Utf8JsonWriter writer, ResponseMessage value, JsonSerializerOptions options)
 		{
-			throw new NotImplementedException();
+			writer.WriteStartObject();
+			writer.WritePropertyName(value.MessageType.ToString());
+			((JsonConverter<ResponseMessageInstance>)options.GetConverter(typeof(ResponseMessageInstance)))
+				.Write(writer, value, options);
+			writer.WriteEndObject();
 		}
 	}
 }

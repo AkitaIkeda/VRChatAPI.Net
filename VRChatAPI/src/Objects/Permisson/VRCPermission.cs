@@ -2,7 +2,7 @@
 
 namespace VRChatAPI.Objects
 {
-	public class VRCPermission : IVRCPermission
+	public class VRCPermission : SerializableObjectAbstract, IVRCPermission
 	{
 		VRCPermissionID Id { get; set; }
 		string name { get; set; }

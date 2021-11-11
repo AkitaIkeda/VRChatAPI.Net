@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 
-namespace VRChatAPI.Extentions.DependancyInjection
+namespace VRChatAPI.Extentions.DependencyInjection
 {
 	public class VRCAPIOptions
 	{

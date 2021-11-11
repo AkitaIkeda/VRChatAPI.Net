@@ -8,8 +8,8 @@ using VRChatAPI.Serialization;
 
 namespace VRChatAPI.Objects
 {
-	[JsonConverter(typeof(VRCIDConverter))]
-	public class InstanceID : IVRCObject, IParsableID
+	[JsonConverter(typeof(ObjectAsStringConverter))]
+	public class InstanceID : IVRCObject, IParsable
 	{
 		public string Name { get; set; }
 		public EInstanceType Type { get; set; }
@@ -35,7 +35,7 @@ namespace VRChatAPI.Objects
 
 		public string GetIDString(int prefixIndex = 0) => GetInstanceIDString();
 
-		public string GetInstanceIDString(bool omitRegion = false) =>
+		public string GetInstanceIDString(bool omitRegion = true) =>
 			$@"{(string.IsNullOrEmpty(Name) ? 
 					$"{new Random().Next(0, 99999):D05}" :
 					Name)
@@ -56,28 +56,35 @@ namespace VRChatAPI.Objects
 		{
 			var raw = id.Split('~');
 			bool canRI = !(raw.FirstOrDefault(v => v == "canRequestInvite") is null);
-			var kved = raw.Skip(1)
+			var keyValue = raw.Skip(1)
 				.Select(v => v.Trim(')').Split('('))
 				.Where(v => v.Length > 1)
 				.ToDictionary(v => v.First(), v => v.ElementAt(1));
-			var type = kved.FirstOrDefault(v => typeDict.Values.Contains(v.Key));
+			var type = keyValue.FirstOrDefault(v => typeDict.Values.Contains(v.Key));
 			Name = raw.First();
 			Type =
 				typeDict
 					.Where(v => v.Value == type.Key)
 					.Select(v => v.Key) is var t 
-				&& t.Count() > 1 
-					? (canRI ? EInstanceType.InvitePlus : EInstanceType.Invite) 
-					: t.Single();
-			Region = kved.ContainsKey("region")
-				? regionDict.First(v => v.Value == kved["region"]).Key
+				&& t.Count() == 0
+					? EInstanceType.Public
+					:	t.Count() > 1 
+						? (canRI ? EInstanceType.InvitePlus : EInstanceType.Invite) 
+						: t.Single();
+			Region = keyValue.ContainsKey("region")
+				? regionDict.First(v => v.Value == keyValue["region"]).Key
 				: ERegion.UnitedStates;
 			Owner = type.Value is null ? null : UserID.Parse(type.Value);
 			Nonce = Type != EInstanceType.Public
-				? Guid.ParseExact(kved["nonce"], "D")
-				: default;
+				? (Guid?)Guid.ParseExact(keyValue["nonce"], "D")
+				: null;
 		}
-		public static InstanceID Parse(string id) =>
-			IDAbstract.Parse<InstanceID>(id);
+		public static InstanceID Parse(string id) {
+			var t = new InstanceID();
+			t.ParseFromString(id);
+			return t;
+		}
+
+		public override string ToString() => GetInstanceIDString();
 	}
 }

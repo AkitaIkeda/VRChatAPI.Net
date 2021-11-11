@@ -8,7 +8,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using VRChatAPI.Extentions.DependancyInjection;
+using VRChatAPI.Extentions.DependencyInjection;
 using VRChatAPI.Interfaces;
 using VRChatAPI.Logging;
 using System.Net;
@@ -26,16 +26,15 @@ namespace VRChatAPI.Implementations
 		//public HttpClient Client => client;
 
 		public APIHttpClient(
-			IOptions<VRCAPIOptions> option,
-			ILogger<APIHttpClient> logger)
+			IOptions<VRCAPIOptions> options,
+			ILogger<APIHttpClient> logger,
+			HttpClientHandler handler)
 		{
-			this.option = option;
+			this.option = options;
 			this.logger = (ILogger)logger ?? NullLogger.Instance;
-			handler = new HttpClientHandler
-			{
-				UseCookies = true,
-			};
+			this.handler = handler;
 			client = new HttpClient(new VRCAPIDelegatingHandler(handler), true);
+			client.BaseAddress = new Uri(options.Value.APIEndpointBaseAddress);
 		}
 
 		#region interface impl
@@ -98,7 +97,7 @@ namespace VRChatAPI.Implementations
 		public ITokenCredential GetCredential()
 		{
 			var c = handler.CookieContainer.GetCookies(new Uri(option.Value.APIEndpointBaseAddress)).OfType<Cookie>();
-			return new TokenCredential(c.First(v => v.Name == "auth"), c.First(v => v.Name == "twoFactorAuth"));
+			return new TokenCredential(c.FirstOrDefault(v => v.Name == "auth"), c.FirstOrDefault(v => v.Name == "twoFactorAuth"));
 		}
 
 		public void Dispose() => client?.Dispose();
@@ -107,7 +106,7 @@ namespace VRChatAPI.Implementations
 		private JsonContent CreateContent<T>(T obj) => 
 			JsonContent.Create(obj, options: option.Value.SerializerOption);
 		private async Task<T> Deserialize<T>(HttpResponseMessage response) =>
-			await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync());
+			await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync(), options: option.Value.SerializerOption);
 		private async Task<T> Deserialize<T>(Task<HttpResponseMessage> response) =>
 			await Deserialize<T>(await response);
 	}

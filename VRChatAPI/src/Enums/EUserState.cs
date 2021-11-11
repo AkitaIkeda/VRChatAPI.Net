@@ -5,15 +5,15 @@ namespace VRChatAPI.Enums
 	[DataContract]
 	public enum EUserState
 	{
-		[EnumMember(Value = "join me")]
-		join_me,
 		[EnumMember]
-		active,
+		offline,
+		[EnumMember]
+		busy,
 		[EnumMember(Value = "ask me")]
 		ask_me,
 		[EnumMember]
-		busy,
-		[EnumMember]
-		offline,
+		active,
+		[EnumMember(Value = "join me")]
+		join_me,
 	}
 }

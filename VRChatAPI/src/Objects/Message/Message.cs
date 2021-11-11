@@ -4,7 +4,7 @@ using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class Message : IMessage
+	public class Message : SerializableObjectAbstract, IMessage
 	{
 		public MessageID Id { get; set; }
 		public bool CanBeUodated { get; set; }

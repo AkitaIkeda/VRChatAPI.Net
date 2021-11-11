@@ -5,7 +5,7 @@ using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class Instance : IInstance
+	public class Instance : SerializableObjectAbstract, IInstance
 	{
 		public bool Active { get; set; }
 		public bool CanRequestInvite { get; set; }

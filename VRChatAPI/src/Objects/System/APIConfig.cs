@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using VRChatAPI.Enums;
+using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class APIConfig
+	public class APIConfig : SerializableObjectAbstract
 	{/// <summary>
 	 /// Address of the VRChat's office
 	 /// </summary>

@@ -6,12 +6,12 @@ using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class Avatar : IAvatar
+	public class Avatar : SerializableObjectAbstract, IAvatar
 	{
 		public AvatarID Id { get; set; }
 		public string AssetUrl { get; set; }
 		//public IAssetUrlObject assetUrlObject { get; set; }
-		public IUser AuthorId { get; set; }
+		public UserID AuthorId { get; set; }
 		public string AuthorName { get; set; }
 		public string Description { get; set; }
 		public bool? Featured { get; set; }

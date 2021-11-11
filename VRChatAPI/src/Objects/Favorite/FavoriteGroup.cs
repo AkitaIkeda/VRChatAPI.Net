@@ -4,7 +4,7 @@ using VRChatAPI.Interfaces;
 
 namespace VRChatAPI.Objects
 {
-	public class FavoriteGroup : IFavoriteGroup
+	public class FavoriteGroup : SerializableObjectAbstract, IFavoriteGroup
 	{
 		public FavoriteGroupID Id { get; set; }
 		public UserID OwnerId { get; set; }
