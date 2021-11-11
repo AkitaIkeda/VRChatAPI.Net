@@ -1,0 +1,29 @@
+﻿namespace VRChatAPI.Enums
+{
+	public enum EWorldSortOption
+	{
+		popularity,
+		heat,
+		trust,
+		shuffle,
+		random,
+		favorites,
+		reportScore,
+		reportCount,
+		publicationDate,
+		labsPublicationDate,
+		created,
+		_created_at,
+		updated,
+		_updated_at,
+		order,
+		relevance,
+		magic,
+		name,
+		labs,
+		active,
+		publication,
+		recent,
+		trending,
+	}
+}
