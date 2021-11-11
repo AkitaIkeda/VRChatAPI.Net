@@ -1,6 +1,6 @@
 # VRChatAPI.Net
 
-VRChat API Wrapper for dotnet written in .Net Core 3.1
+VRChat API Wrapper for dotnet written in .Net Standard 2.0
 
 https://www.nuget.org/packages/VRChatAPI.Net/
 
@@ -21,7 +21,7 @@ OR
 
 Add PackageReference under the ItemGroup in your .csproj
 ```xml
-<PackageReference Include="VRChatAPI.Net" Version="1.0.0" />
+<PackageReference Include="VRChatAPI.Net" Version="[VERSION]" />
 ```
 Be Like
 ```xml
@@ -31,7 +31,7 @@ Be Like
 
   <ItemGroup>
 		<!-- Other References -->
-		<PackageReference Include="VRChatAPI.Net" Version="1.0.0" />
+		<PackageReference Include="VRChatAPI.Net" Version="[VERSION]" />
   </ItemGroup>
 
 </Project>

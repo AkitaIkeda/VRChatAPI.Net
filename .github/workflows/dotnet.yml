@@ -27,7 +27,39 @@ jobs:
       run: dotnet build --configuration Release --no-restore -p:Version=${GITHUB_REF/refs\/tags\/v/}
 
     - name: Packaging
-      run: dotnet pack --include-symbols --configuration Release --no-build --output nupkgs -p:PackageVersion=${GITHUB_REF/refs\/tags\/v/}
+      run: dotnet pack VRChatAPI/ --include-symbols --configuration Release --no-build --output nupkgs -p:PackageVersion=${GITHUB_REF/refs\/tags\/v/}
+
+    - name: upload nupkgs
+      uses: actions/upload-artifact@v2
+      with:
+        name: nupkgs
+        path: nupkgs
+
+  upload:
+    needs: build
+    runs-on: windows-latest
+    env:
+      DOTNET_NOLOGO: true
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.x
+
+    - name: Install dependencies
+      run: dotnet restore
+    
+    - name: download nupkgs
+      uses: actions/download-artifact@v2
+      with:
+        name: nupkgs
+        path: nupkgs
+    
+    - name: ls 
+      run: ls nupkgs
 
     - name: Nuget Push
       run:  dotnet nuget push nupkgs\*.nupkg -k ${{ secrets.NUGET_API_KEY }}  --source https://api.nuget.org/v3/index.json --skip-duplicate
