@@ -52,7 +52,7 @@ namespace VRChatAPI.Implementations
 		public ITokenCredential Credential => client.GetCredential();
 
 		public CurrentUser User => loginInfo.User;
-		public bool TFARequired => loginInfo.TFARequired;
+		public bool IsLoggedIn => loginInfo.TFARequired;
 
 		public APIConfig RemoteConfig => remoteConfig;
 

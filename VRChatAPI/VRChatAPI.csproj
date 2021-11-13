@@ -13,6 +13,8 @@
     <Description>VRChat API Wrapper for dotnet written in .Net Standard 2.0</Description>
     <Copyright>Copyright © 2021 mueru</Copyright>
     <Product>VRChatAPI.Net</Product>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>

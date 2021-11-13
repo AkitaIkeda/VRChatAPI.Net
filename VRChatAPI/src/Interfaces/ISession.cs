@@ -9,7 +9,7 @@ namespace VRChatAPI.Interfaces
 		IAvatarAPI, IWorldAPI, IFavoriteAPI, INotificationAPI,
 		IFileAPI, IModerationAPI, IPermissionAPI
 	{
-		bool TFARequired { get; }
+		bool IsLoggedIn { get; }
 		IWSEventHandler EventHandler { get; }
 		ITokenCredential Credential { get; }
 		IAPIHttpClient APIHttpClient { get; }

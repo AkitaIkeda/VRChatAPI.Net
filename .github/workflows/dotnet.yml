@@ -51,7 +51,7 @@ jobs:
       run: dotnet build --configuration Release --no-restore -p:Version=${GITHUB_REF/refs\/tags\/v/}
 
     - name: Packaging
-      run: dotnet pack VRChatAPI/ --include-symbols --configuration Release --no-build --output nupkgs -p:PackageVersion=${GITHUB_REF/refs\/tags\/v/}
+      run: dotnet pack VRChatAPI/ --configuration Release --no-build -p:PackageVersion=${GITHUB_REF/refs\/tags\/v/}
 
     - name: upload nupkgs
       uses: actions/upload-artifact@v2
