@@ -84,7 +84,7 @@ jobs:
         path: packages
     
     - name: ls 
-      run: ls nupkgs
+      run: ls packages
 
     - name: Nuget Push
       run:  dotnet nuget push packages\*.nupkg -k ${{ secrets.NUGET_API_KEY }}  --source https://api.nuget.org/v3/index.json --skip-duplicate
