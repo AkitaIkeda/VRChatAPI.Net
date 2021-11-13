@@ -15,11 +15,11 @@ namespace VRChatAPI.Implementations
 {
 	public partial class Session : ISession
 	{
-		private readonly APIConfig remoteConfig;
 		private readonly ILogger logger;
 		private readonly IAPIHttpClient client;
 		private readonly IWSEventHandler eventHandler;
 		private readonly IOptions<VRCAPIOptions> options;
+		private APIConfig remoteConfig;
 		private LoginInfo loginInfo;
 		private JsonSerializerOptions serializerOption => options.Value.SerializerOption;
 
@@ -34,10 +34,9 @@ namespace VRChatAPI.Implementations
 			this.client = client;
 			this.eventHandler = eventHandler;
 			this.options = options;
-			
-			var tr = GetAPIConfig();
-			remoteConfig = tr.Result;
 
+			GetAPIConfig().ContinueWith(v => remoteConfig = v.Result);
+			
 			eventHandler.OnUserUpdate += UpdateUserInfo;
 		}
 
