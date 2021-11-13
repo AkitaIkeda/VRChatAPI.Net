@@ -80,17 +80,17 @@ jobs:
     - name: download nupkgs
       uses: actions/download-artifact@v2
       with:
-        name: nupkgs
-        path: nupkgs
+        name: packages
+        path: packages
     
     - name: ls 
       run: ls nupkgs
 
     - name: Nuget Push
-      run:  dotnet nuget push nupkgs\*.nupkg -k ${{ secrets.NUGET_API_KEY }}  --source https://api.nuget.org/v3/index.json --skip-duplicate
+      run:  dotnet nuget push packages\*.nupkg -k ${{ secrets.NUGET_API_KEY }}  --source https://api.nuget.org/v3/index.json --skip-duplicate
 
     - name: AddGithubSource
       run: dotnet nuget add source --username mueru --password ${{secrets.GITHUB_TOKEN}} --name github https://nuget.pkg.github.com/mueru/index.json
 
     - name: PushGithub
-      run: dotnet nuget push nupkgs\*.nupkg --source github --skip-duplicate
+      run: dotnet nuget push packages\*.nupkg --source github --skip-duplicate
