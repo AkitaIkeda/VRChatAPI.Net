@@ -11,10 +11,13 @@ using VRChatAPI.Utils;
 
 namespace VRChatAPI.Implementations
 {
+	[Serializable]
 	internal class TokenCredential : ITokenCredential
 	{
-		private readonly Cookie _Token;
-		private readonly Cookie _TFAToken;
+		public Cookie _Token { get; set; }
+		public Cookie _TFAToken { get; set; }
+
+		public TokenCredential(){}
 
 		public TokenCredential(string AuthToken, Uri baseAddress)
 		{
