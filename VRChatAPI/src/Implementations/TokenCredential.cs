@@ -12,7 +12,7 @@ using VRChatAPI.Utils;
 namespace VRChatAPI.Implementations
 {
 	[Serializable]
-	internal class TokenCredential : ITokenCredential
+	public class TokenCredential : ITokenCredential
 	{
 		public Cookie _Token { get; set; }
 		public Cookie _TFAToken { get; set; }
