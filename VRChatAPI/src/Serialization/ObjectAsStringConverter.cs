@@ -23,8 +23,10 @@ namespace VRChatAPI.Serialization
 			{
 				if (reader.TokenType != JsonTokenType.String)
 					throw new JsonException("ID must be a string object in order to be read.");
+				var s = reader.GetString();
+				if(string.IsNullOrEmpty(s)) return default(T);
 				var r = new T();
-				r.ParseFromString(reader.GetString());
+				r.ParseFromString(s);
 				return r;
 			}
 
