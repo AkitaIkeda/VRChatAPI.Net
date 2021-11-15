@@ -18,6 +18,7 @@ namespace VRChatAPI.Utils
 		{
 			string response = r.Content.ReadAsStringAsync().Result;
 			StatusCode = r.StatusCode;
+			Data.Add("Request", r.RequestMessage);
 			try
 			{
 				ErrorMessage = JsonSerializer.Deserialize<ResponseMessage>(

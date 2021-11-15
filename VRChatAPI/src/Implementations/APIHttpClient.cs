@@ -35,6 +35,7 @@ namespace VRChatAPI.Implementations
 			this.handler = handler;
 			client = new HttpClient(new VRCAPIDelegatingHandler(handler), true);
 			client.BaseAddress = new Uri(options.Value.APIEndpointBaseAddress);
+			client.DefaultRequestHeaders.UserAgent.ParseAdd($"VRChatAPI.Net/{typeof(APIHttpClient).Assembly.GetName().Version}");
 		}
 
 		#region interface impl
