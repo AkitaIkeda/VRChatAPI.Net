@@ -98,7 +98,7 @@ namespace VRChatAPI.Implementations
 		public ITokenCredential GetCredential()
 		{
 			var c = handler.CookieContainer.GetCookies(new Uri(option.Value.APIEndpointBaseAddress)).OfType<Cookie>();
-			return new TokenCredential(c.FirstOrDefault(v => v.Name == "auth"), c.FirstOrDefault(v => v.Name == "twoFactorAuth"));
+			return new TokenCredential(c.FirstOrDefault(v => v.Name == "auth")?.Value, c.FirstOrDefault(v => v.Name == "twoFactorAuth")?.Value);
 		}
 
 		public void Dispose() => client?.Dispose();

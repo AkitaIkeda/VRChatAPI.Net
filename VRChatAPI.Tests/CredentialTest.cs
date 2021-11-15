@@ -32,7 +32,7 @@ namespace VRChatAPI.Tests{
 		[Fact]
 		public async Task TokenCredentialTest()
 		{
-			var cred = new TokenCredential("test", new System.Uri(options.Value.APIEndpointBaseAddress));
+			var cred = new TokenCredential("test");
 			await LoginTest(cred, r => 
 				r.Headers.GetValues("cookie").Contains("auth=test"));
 		}

@@ -53,7 +53,7 @@ namespace VRChatAPI.Tests{
 		[Fact]
 		public void StartAndStopTest(){
 			handler.IsHandling.Should().BeFalse();
-			handler.StartHandling(new TokenCredential("test", new Uri(options.Value.APIEndpointBaseAddress)));
+			handler.StartHandling(new TokenCredential("test"));
 			handler.IsHandling.Should().BeTrue();
 			handler.StopHandling();
 			handler.IsHandling.Should().BeFalse();
@@ -62,7 +62,7 @@ namespace VRChatAPI.Tests{
 		[Fact]
 		public void EventHandlerTest(){
 			var monitor = handler.Monitor();
-			handler.StartHandling(new TokenCredential("test", new Uri(options.Value.APIEndpointBaseAddress)));
+			handler.StartHandling(new TokenCredential("test"));
 			var d = new DummyObjectGenerator();
 			var m = monitor.Should();
 			m.NotRaise(nameof(handler.OnEvent));

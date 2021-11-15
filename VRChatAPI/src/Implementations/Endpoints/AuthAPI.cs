@@ -43,10 +43,7 @@ namespace VRChatAPI.Implementations
 			var r = await client.Get<JsonElement>($"{authEndpoint}", ct);
 			return (
 				r.GetProperty("ok").GetBoolean(), 
-				new TokenCredential(
-					r.GetProperty("token").GetString(), 
-					new Uri(options.Value.APIEndpointBaseAddress)
-					)
+				new TokenCredential(r.GetProperty("token").GetString())
 				);
 		}
 
