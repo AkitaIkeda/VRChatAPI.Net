@@ -59,6 +59,6 @@ namespace VRChatAPI.Implementations
 		public async Task<string> StartUpload(IVRCFile file, int version, EFileType fileType, uint partNumber = 1, CancellationToken ct = default) =>
 			(await client.Put<JsonElement>($"{fileEndpoint}/{file.GetIDString()}/{version}/{fileType}/start?partNumber={partNumber}", ct))
 				.GetProperty("url").GetString();
-
+		
 	}
 }

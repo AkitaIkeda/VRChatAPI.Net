@@ -23,7 +23,7 @@ namespace VRChatAPI.Implementations
 		private readonly IOptions<VRCAPIOptions> option;
 		private readonly ILogger logger;
 
-		//public HttpClient Client => client;
+		public HttpClient Client => client;
 
 		public APIHttpClient(
 			IOptions<VRCAPIOptions> options,

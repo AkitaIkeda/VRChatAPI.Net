@@ -21,6 +21,6 @@ namespace VRChatAPI.Interfaces
 		Task<TResult> Put<TResult, TContent>(string url, TContent content, CancellationToken ct);
 		Task<HttpResponseMessage> Send(HttpRequestMessage request, CancellationToken ct);
 		ITokenCredential GetCredential();
-		//HttpClient Client { get; }
+		HttpClient Client { get; }
 	}
 }

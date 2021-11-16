@@ -11,6 +11,7 @@ using librsync.net;
 using VRChatAPI.Enums;
 using VRChatAPI.Interfaces;
 using VRChatAPI.Objects;
+using static VRChatAPI.Utils.JsonUtilityExtensions;
 
 namespace VRChatAPI.Extentions
 {
@@ -160,7 +161,5 @@ namespace VRChatAPI.Extentions
 		public static string GetMD5(this Stream s) => Convert.ToBase64String(MD5.Create().ComputeHash(s));
 		public static Stream ComputeSignature(this Stream s) => Librsync.ComputeSignature(s);
 		public static Stream ComputeDelta(this Stream s, Stream previousSignature) => Librsync.ComputeDelta(previousSignature, s);
-		private static string JsonStringFromObject<T>(T value, JsonSerializerOptions options = null) => 
-			JsonSerializer.Deserialize<string>(JsonSerializer.SerializeToUtf8Bytes(value, options), options);
 	}
 }
