@@ -28,9 +28,9 @@ namespace VRChatAPI.Implementations
 
 		public async Task<LoginInfo> Login(IAPIHttpClient session, JsonSerializerOptions option, CancellationToken ct = default)
 		{
-			session.Client.DefaultRequestHeaders.Add("cookie", $"auth={AuthToken}");
+			session.AddCookie(new Cookie("auth", AuthToken, session.Client.BaseAddress.PathAndQuery, session.Client.BaseAddress.Host));
 			if (!(TFAToken is null))
-				session.Client.DefaultRequestHeaders.Add("cookie", $"twoFactorAuth={TFAToken}");
+				session.AddCookie(new Cookie("twoFactorAuth", TFAToken, session.Client.BaseAddress.PathAndQuery, session.Client.BaseAddress.Host));
 			var req = new HttpRequestMessage(HttpMethod.Get, "auth/user");
 			var r = await session.Send(req, ct);
 			var j = JsonSerializer.Deserialize<JsonElement>(await r.Content.ReadAsStringAsync());

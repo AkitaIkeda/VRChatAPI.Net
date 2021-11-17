@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,5 +23,7 @@ namespace VRChatAPI.Interfaces
 		Task<HttpResponseMessage> Send(HttpRequestMessage request, CancellationToken ct);
 		ITokenCredential GetCredential();
 		HttpClient Client { get; }
+		void AddCookie(Cookie cookie);
+		void AddCookie(CookieCollection collection);
 	}
 }

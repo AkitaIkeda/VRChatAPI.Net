@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -29,7 +30,7 @@ namespace VRChatAPI.Implementations
 			if (auth is null)
 				throw new InvalidOperationException($"{nameof(BasicAuthCredential)} can be used to login only once.");
 			if (!(tfaToken is null))
-				session.Client.DefaultRequestHeaders.Add("cookie", $"twoFactorAuth={tfaToken}");
+				session.AddCookie(new Cookie("twoFactorAuth", tfaToken, session.Client.BaseAddress.PathAndQuery, session.Client.BaseAddress.Host));
 
 			var req = new HttpRequestMessage(HttpMethod.Get, "auth/user");
 			req.Headers.Authorization = new AuthenticationHeaderValue("Basic", auth);

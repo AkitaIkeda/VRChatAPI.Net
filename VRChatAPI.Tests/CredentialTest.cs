@@ -32,8 +32,9 @@ namespace VRChatAPI.Tests{
 		[Fact]
 		public async Task TokenCredentialTest()
 		{
-			await LoginTest(() => new TokenCredential("test"), r => 
-				r.Headers.GetValues("cookie").Contains("auth=test"));
+			await LoginTest(() => new TokenCredential("test"), r => true);
+			mock.Object.CookieContainer.GetCookies(new Uri(options.Value.APIEndpointBaseAddress)).Should().Contain(c => 
+				c.Name == "auth" && c.Value == "test");
 		}
 
 		[Fact]
@@ -45,6 +46,7 @@ namespace VRChatAPI.Tests{
 
 		private async Task LoginTest(Func<ICredential> cred, System.Linq.Expressions.Expression<Func<HttpRequestMessage, bool>>  f)
 		{
+			mock.CallBase = true;
 			var setup = mock.Protected().Setup<Task<HttpResponseMessage>>("SendAsync",
 							ItExpr.Is<HttpRequestMessage>(f),
 							ItExpr.IsAny<CancellationToken>());

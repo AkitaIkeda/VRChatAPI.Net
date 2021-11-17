@@ -95,6 +95,12 @@ namespace VRChatAPI.Implementations
 		}
 		#endregion
 
+		public void AddCookie(Cookie cookie) =>
+			handler.CookieContainer.Add(cookie);
+
+		public void AddCookie(CookieCollection collection) =>
+			handler.CookieContainer.Add(collection);
+
 		public ITokenCredential GetCredential()
 		{
 			var c = handler.CookieContainer.GetCookies(new Uri(option.Value.APIEndpointBaseAddress)).OfType<Cookie>();
