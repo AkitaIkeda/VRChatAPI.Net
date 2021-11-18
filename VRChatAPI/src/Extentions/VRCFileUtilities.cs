@@ -153,7 +153,7 @@ namespace VRChatAPI.Extentions
 					new JsonStringEnumConverter(),
 				}
 			}));
-			r.Headers.Add("content-md5", md5Base64);
+			r.Headers.TryAddWithoutValidation("content-md5", md5Base64);
 			var response = await session.APIHttpClient.Send(r, ct);
 			return response.Headers.ETag.Tag;
 		}
