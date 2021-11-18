@@ -11,6 +11,7 @@ using librsync.net;
 using VRChatAPI.Enums;
 using VRChatAPI.Interfaces;
 using VRChatAPI.Objects;
+using VRChatAPI.Serialization;
 using static VRChatAPI.Utils.JsonUtilityExtensions;
 
 namespace VRChatAPI.Extentions
@@ -148,12 +149,12 @@ namespace VRChatAPI.Extentions
 		{
 			var r = new HttpRequestMessage(HttpMethod.Post, url);
 			r.Content = new StreamContent(s);
-			r.Headers.TryAddWithoutValidation("content-type", JsonStringFromObject(contentType, new JsonSerializerOptions{
+			r.Headers.Add("content-type", JsonStringFromObject(contentType, new JsonSerializerOptions{
 				Converters = {
-					new JsonStringEnumConverter(),
+					new StringEnumConverter(),
 				}
 			}));
-			r.Headers.TryAddWithoutValidation("content-md5", md5Base64);
+			r.Headers.Add("content-md5", md5Base64);
 			var response = await session.APIHttpClient.Send(r, ct);
 			return response.Headers.ETag.Tag;
 		}
