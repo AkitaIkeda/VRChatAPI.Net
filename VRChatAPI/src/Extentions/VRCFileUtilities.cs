@@ -148,7 +148,7 @@ namespace VRChatAPI.Extentions
 		{
 			var r = new HttpRequestMessage(HttpMethod.Post, url);
 			r.Content = new StreamContent(s);
-			r.Headers.Add("content-type", JsonStringFromObject(contentType, new JsonSerializerOptions{
+			r.Headers.TryAddWithoutValidation("content-type", JsonStringFromObject(contentType, new JsonSerializerOptions{
 				Converters = {
 					new JsonStringEnumConverter(),
 				}
