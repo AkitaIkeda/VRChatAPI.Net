@@ -148,7 +148,7 @@ namespace VRChatAPI.Extentions
 			string md5Base64,
 			CancellationToken ct = default)
 		{
-			var r = new HttpRequestMessage(HttpMethod.Post, url);
+			var r = new HttpRequestMessage(HttpMethod.Put, url);
 			var c= new StreamContent(s);
 			c.Headers.ContentType = MediaTypeHeaderValue.Parse(JsonStringFromObject(contentType, new JsonSerializerOptions{
 				Converters = {
