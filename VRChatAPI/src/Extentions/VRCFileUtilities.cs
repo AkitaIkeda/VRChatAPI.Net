@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -149,11 +150,11 @@ namespace VRChatAPI.Extentions
 		{
 			var r = new HttpRequestMessage(HttpMethod.Post, url);
 			var c= new StreamContent(s);
-			c.Headers.ContentType.MediaType = JsonStringFromObject(contentType, new JsonSerializerOptions{
+			c.Headers.ContentType = MediaTypeHeaderValue.Parse(JsonStringFromObject(contentType, new JsonSerializerOptions{
 				Converters = {
 					new StringEnumConverter(),
 				}
-			});
+			}));
 			c.Headers.ContentMD5 = Convert.FromBase64String(md5Base64);
 			r.Content = c;
 			var response = await session.APIHttpClient.Send(r, ct);
