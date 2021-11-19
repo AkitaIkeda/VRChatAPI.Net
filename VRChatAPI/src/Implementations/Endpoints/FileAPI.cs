@@ -40,7 +40,7 @@ namespace VRChatAPI.Implementations
 			client.Delete<VRCFile>($"{fileEndpoint}/{file.GetIDString()}/{version}", ct);
 
 		public Task<VRCFile> FinishUpload(IVRCFile file, int version, EFileType fileType, IEnumerable<string> etags, CancellationToken ct = default) =>
-			client.Put<VRCFile, Dictionary<string, object>>($"{fileEndpoint}/{file.GetIDString()}/{version}/{fileType}/finish",
+			client.Put<VRCFile, Dictionary<string, object>>($"{fileEndpoint}/{file.GetIDString()}/{version}/{JsonUtilityExtensions.JsonStringFromObject(fileType, serializerOption)}/finish",
 				new Dictionary<string, object>{
 					{ "etags", etags },
 				}, ct);
@@ -54,10 +54,10 @@ namespace VRChatAPI.Implementations
 			client.Get<VRCFile>($"{fileEndpoint}/{obj.GetIDString()}", ct);
 
 		public Task<FileUploadStatus> GetUploadStatus(IVRCFile file, int version, EFileType fileType, CancellationToken ct = default) =>
-			client.Get<FileUploadStatus>($"{fileEndpoint}/{file.GetIDString()}/{version}/{fileType}/status", ct);
+			client.Get<FileUploadStatus>($"{fileEndpoint}/{file.GetIDString()}/{version}/{JsonUtilityExtensions.JsonStringFromObject(fileType, serializerOption)}/status", ct);
 
 		public async Task<string> StartUpload(IVRCFile file, int version, EFileType fileType, uint partNumber = 1, CancellationToken ct = default) =>
-			(await client.Put<JsonElement>($"{fileEndpoint}/{file.GetIDString()}/{version}/{fileType}/start?partNumber={partNumber}", ct))
+			(await client.Put<JsonElement>($"{fileEndpoint}/{file.GetIDString()}/{version}/{JsonUtilityExtensions.JsonStringFromObject(fileType, serializerOption)}/start?partNumber={partNumber}", ct))
 				.GetProperty("url").GetString();
 		
 	}
