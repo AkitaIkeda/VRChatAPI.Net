@@ -85,14 +85,14 @@ namespace VRChatAPI.Extentions
 			var v = file.Versions.LastOrDefault();
 			if(v.Status == EUploadStatus.waiting)
 			{
-				if (v.Signature.Md5 != sigMd5 && (uploadDelta ? v.Delta.Status : v.File.Status) != EUploadStatus.waiting)
+				if (v.Signature.Md5 != sigMd5)
 				{
 					file = await session.DeleteFileVersion(file, v.Version, ct);
-					file = await session.CreateNewFileVersion(file, uploadDelta, sigMd5, sigSize, fileMd5, fileSize);
+					file = await session.CreateNewFileVersion(file, uploadDelta, fileMd5, fileSize, sigMd5, sigSize);
 				}
 			}
 			else{
-				file = await session.CreateNewFileVersion(file, uploadDelta, sigMd5, sigSize, fileMd5, fileSize);
+				file = await session.CreateNewFileVersion(file, uploadDelta, fileMd5, fileSize, sigMd5, sigSize);
 			}
 
 			try
