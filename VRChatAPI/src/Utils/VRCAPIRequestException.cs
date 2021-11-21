@@ -6,10 +6,10 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using VRChatAPI.Objects;
 
-namespace VRChatAPI.Utils
+namespace VRChatAPI.Exceptions
 {
 	[Serializable]
-	internal class VRCAPIRequestException : HttpRequestException
+	public class VRCAPIRequestException : HttpRequestException
 	{
 		public readonly ResponseMessage ErrorMessage;
 		public readonly HttpStatusCode StatusCode;
