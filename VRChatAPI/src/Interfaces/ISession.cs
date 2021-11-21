@@ -15,6 +15,7 @@ namespace VRChatAPI.Interfaces
 		IAPIHttpClient APIHttpClient { get; }
 		CurrentUser User { get; }
 		APIConfig RemoteConfig { get; }
+		LoginInfo LoginInfo { get; }
 		void StartWSEventHandling();
 		void StopWSEventHandling();
 		Task<LoginInfo> Login(ICredential credential, CancellationToken ct = default);

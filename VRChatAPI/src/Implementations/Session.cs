@@ -20,7 +20,7 @@ namespace VRChatAPI.Implementations
 		private readonly IWSEventHandler eventHandler;
 		private readonly IOptions<VRCAPIOptions> options;
 		private APIConfig remoteConfig;
-		private LoginInfo loginInfo;
+		private readonly LoginInfo loginInfo;
 		private JsonSerializerOptions serializerOption => options.Value.SerializerOption;
 
 		public Session(
@@ -34,6 +34,7 @@ namespace VRChatAPI.Implementations
 			this.client = client;
 			this.eventHandler = eventHandler;
 			this.options = options;
+			this.loginInfo = new LoginInfo();
 
 			GetAPIConfig().ContinueWith(v => remoteConfig = v.Result);
 			
@@ -60,6 +61,7 @@ namespace VRChatAPI.Implementations
 		public bool IsLoggedIn => loginInfo.TFARequired;
 
 		public APIConfig RemoteConfig => remoteConfig;
+		public LoginInfo LoginInfo => loginInfo;
 
 		public void StartWSEventHandling() => 
 			EventHandler.StartHandling(Credential);
@@ -68,7 +70,7 @@ namespace VRChatAPI.Implementations
 			EventHandler.StopHandling();
 
 		public async Task<LoginInfo> Login(ICredential credential, CancellationToken ct = default) => 
-			loginInfo = await credential.Login(this.client, serializerOption, ct);
+			(await credential.Login(this.client, serializerOption, ct)).CopyTo(loginInfo);
 
 		#endregion
 	}
