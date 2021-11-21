@@ -27,11 +27,11 @@ namespace VRChatAPI.Implementations
 		public Task<User> Get(IUser obj, CancellationToken ct = default) =>
 			client.Get<User>($"{usersEndpoint}/{obj.GetIDString()}", ct);
 
-		public Task<IEnumerable<LimitedUser>> GetFriends(bool? online, int n, int offset, CancellationToken ct = default) =>
+		public Task<IEnumerable<LimitedUser>> GetFriends(bool? offline, int n, int offset, CancellationToken ct = default) =>
 			client.Get<IEnumerable<LimitedUser>>($@"{authEndpoint}/{userEndpoint}/{friendsEndpoint}?{QueryConstructor.MakeQuery(
 				new Dictionary<string, object>
 				{
-					{ "offline", online },
+					{ "offline", offline },
 					{ "n", n },
 					{ "offset", offset },
 				}, serializerOption)}", ct);
