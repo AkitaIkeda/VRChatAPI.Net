@@ -38,6 +38,12 @@ namespace VRChatAPI.Implementations
 			GetAPIConfig().ContinueWith(v => remoteConfig = v.Result);
 			
 			eventHandler.OnUserUpdate += UpdateUserInfo;
+			client.OnRequestFailedWithResponseMessage += OnRequestFailedWithResponseMessage;
+		}
+
+		private void OnRequestFailedWithResponseMessage(object sender, ResponseMessage e)
+		{
+			if(e.StatusCode == 401) loginInfo.User = null;
 		}
 
 		private void UpdateUserInfo(CurrentUser user) => loginInfo.User = user;

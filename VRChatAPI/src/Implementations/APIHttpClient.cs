@@ -13,6 +13,7 @@ using VRChatAPI.Interfaces;
 using VRChatAPI.Logging;
 using System.Net;
 using VRChatAPI.Utils;
+using VRChatAPI.Objects;
 
 namespace VRChatAPI.Implementations
 {
@@ -20,8 +21,18 @@ namespace VRChatAPI.Implementations
 	{
 		private readonly HttpClient client;
 		private readonly HttpClientHandler handler;
+		private readonly VRCAPIDelegatingHandler delegatingHandler;
 		private readonly IOptions<VRCAPIOptions> option;
 		private readonly ILogger logger;
+
+		public event EventHandler<ResponseMessage> OnRequestFailedWithResponseMessage {
+			add => delegatingHandler.OnRequestFailedWithResponseMessage += value;
+			remove => delegatingHandler.OnRequestFailedWithResponseMessage -= value;
+		}
+		public event EventHandler<HttpResponseMessage> OnRequestFailed{
+			add => delegatingHandler.OnRequestFailed += value;
+			remove => delegatingHandler.OnRequestFailed -= value;
+		}
 
 		public HttpClient Client => client;
 
@@ -33,7 +44,8 @@ namespace VRChatAPI.Implementations
 			this.option = options;
 			this.logger = (ILogger)logger ?? NullLogger.Instance;
 			this.handler = handler;
-			client = new HttpClient(new VRCAPIDelegatingHandler(handler), true);
+			delegatingHandler = new VRCAPIDelegatingHandler(handler);
+			client = new HttpClient(delegatingHandler, true);
 			client.BaseAddress = new Uri(options.Value.APIEndpointBaseAddress);
 			client.DefaultRequestHeaders.UserAgent.ParseAdd($"VRChatAPI.Net/{typeof(APIHttpClient).Assembly.GetName().Version}");
 		}
