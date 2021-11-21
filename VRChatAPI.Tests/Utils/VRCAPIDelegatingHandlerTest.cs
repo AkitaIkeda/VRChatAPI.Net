@@ -38,7 +38,7 @@ namespace VRChatAPI.Tests{
 			});
 			var d = new HttpClient(new VRCAPIDelegatingHandler(m.Object));
 			var t = await d.Invoking(v => v.SendAsync(new HttpRequestMessage(HttpMethod.Get, "https://example.com")))
-				.Should().ThrowAsync<VRCAPIRequestException>().WithMessage(content);
+				.Should().ThrowAsync<Exceptions.VRCAPIRequestException>().WithMessage(content);
 			t.Which.Data.Should()
 				.Match(v => v.As<IDictionary>().Contains("ErrorMessage"))
 				.And
@@ -58,7 +58,7 @@ namespace VRChatAPI.Tests{
 			});
 			var d = new HttpClient(new VRCAPIDelegatingHandler(m.Object));
 			var t = await d.Invoking(v => v.SendAsync(new HttpRequestMessage(HttpMethod.Get, "https://example.com")))
-				.Should().ThrowAsync<VRCAPIRequestException>().WithMessage("test");
+				.Should().ThrowAsync<Exceptions.VRCAPIRequestException>().WithMessage("test");
 		}
 		
 		[Fact]

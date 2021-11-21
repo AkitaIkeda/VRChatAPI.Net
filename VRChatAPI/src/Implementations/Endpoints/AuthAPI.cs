@@ -32,8 +32,8 @@ namespace VRChatAPI.Implementations
 				}, serializerOption)}", ct))
 				.GetProperty("userExists").GetBoolean();
 
-		public Task<CurrentUser> GetCurrentUser(CancellationToken ct = default) =>
-			client.Get<CurrentUser>($"{authEndpoint}/{userEndpoint}", ct);
+		public async Task<CurrentUser> GetCurrentUser(CancellationToken ct = default) =>
+			loginInfo.User = await client.Get<CurrentUser>($"{authEndpoint}/{userEndpoint}", ct);
 
 		public Task<ResponseMessage> Logout(CancellationToken ct = default) =>
 			client.Put<ResponseMessage>("logout", ct);
