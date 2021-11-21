@@ -69,8 +69,12 @@ namespace VRChatAPI.Implementations
 		public void StopWSEventHandling() => 
 			EventHandler.StopHandling();
 
-		public async Task<LoginInfo> Login(ICredential credential, CancellationToken ct = default) => 
-			(await credential.Login(this.client, serializerOption, ct)).CopyTo(loginInfo);
+		public async Task<LoginInfo> Login(ICredential credential, CancellationToken ct = default)
+		{
+			var t = await credential.Login(this.client, serializerOption, ct);
+			loginInfo.User = t.User;
+			return loginInfo;
+		} 
 
 		#endregion
 	}

@@ -15,10 +15,5 @@ namespace VRChatAPI.Objects
 		}
 		public event EventHandler OnLoginStateChangedCallback;
 		internal static LoginInfo TFARequiredInfo => new LoginInfo();
-		internal LoginInfo CopyTo(LoginInfo info){
-			info.User = this.User;
-			info.OnLoginStateChangedCallback = this.OnLoginStateChangedCallback;
-			return info;
-		}
 	}
 }
