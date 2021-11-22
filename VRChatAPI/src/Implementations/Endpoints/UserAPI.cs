@@ -15,6 +15,14 @@ namespace VRChatAPI.Implementations
 		private const string usersEndpoint = "users";
 		private const string friendsEndpoint = "friends";
 
+		public Task<CurrentUser> AddTags(IEnumerable<string> tags, CancellationToken ct = default) =>
+			AddTags(User, tags, ct);
+
+		public Task<CurrentUser> AddTags(IUser user, IEnumerable<string> tags, CancellationToken ct = default) =>
+			client.Post<CurrentUser, Dictionary<string, object>>(
+				$"{usersEndpoint}/{user.GetIDString()}/addTags", 
+				new Dictionary<string, object>{{ "tags", tags }}, ct);
+
 		public Task<ResponseMessage> CancelFriendRequest(IUser user, CancellationToken ct = default) =>
 			client.Delete<ResponseMessage>($"{userEndpoint}/{user.GetIDString()}/friendRequest", ct);
 
@@ -51,6 +59,14 @@ namespace VRChatAPI.Implementations
 					return EFriendStatus.NotFriend;
 			}
 		}
+
+		public Task<CurrentUser> RemoveTags(IEnumerable<string> tags, CancellationToken ct = default) =>
+			RemoveTags(User, tags, ct);
+
+		public Task<CurrentUser> RemoveTags(IUser user, IEnumerable<string> tags, CancellationToken ct = default) =>
+			client.Post<CurrentUser, Dictionary<string, object>>(
+				$"{usersEndpoint}/{User.GetIDString()}/addTags", 
+				new Dictionary<string, object>{{ "tags", tags }}, ct);
 
 		public Task<Notification> SendFriendRequest(IUser user, CancellationToken ct = default) =>
 			client.Post<Notification>($"user/{user.GetIDString()}/friendRequest", ct);
