@@ -15,7 +15,7 @@ namespace VRChatAPI.Objects
 		public string AuthorName { get; set; }
 		public string Description { get; set; }
 		public bool? Featured { get; set; }
-		public string ImageUrl { get; set; }
+		public VRCFilePath ImageUrl { get; set; }
 		public string Name { get; set; }
 		public EReleaseState? ReleaseStatus { get; set; }
 		public IEnumerable<string> Tags { get; set; }
