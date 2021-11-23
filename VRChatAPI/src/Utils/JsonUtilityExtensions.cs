@@ -18,7 +18,14 @@ namespace VRChatAPI.Utils
 		}
 		public static string JsonStringFromObject<T>(T value, JsonSerializerOptions options = null)
 		{
-			return JsonSerializer.Deserialize<JsonElement>(JsonSerializer.SerializeToUtf8Bytes(value, options), options).ToString();
+			switch(value){
+				case int _:
+					return value.ToString();
+				case bool _:
+					return value.ToString().ToLowerInvariant();
+				default:
+					return JsonSerializer.Deserialize<JsonElement>(JsonSerializer.SerializeToUtf8Bytes(value, options), options).ToString();
+			}
 		}
 	}
 }
