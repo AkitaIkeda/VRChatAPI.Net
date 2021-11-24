@@ -56,7 +56,7 @@ namespace VRChatAPI.Implementations
 			client.Post<Notification>($"user/{user.GetIDString()}/friendRequest", ct);
 
 		public Task<ResponseMessage> Unfriend(IUser user, CancellationToken ct = default) =>
-			client.Delete<ResponseMessage>($"{authEndpoint}/{userEndpoint}/{friendsEndpoint}", ct);
+			client.Delete<ResponseMessage>($"{authEndpoint}/{userEndpoint}/{friendsEndpoint}/{user.GetIDString()}", ct);
 
 		public Task<CurrentUser> Update(IUser from, CurrentUser to, CancellationToken ct = default) =>
 			client.Put<CurrentUser, CurrentUser>($"users/{from.GetIDString()}", to, ct);
