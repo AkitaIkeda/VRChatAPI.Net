@@ -15,7 +15,7 @@ namespace VRChatAPI.Objects
 		public VRCFilePath ProfilePicOverride { get; set; }
 		public string StatusDescription { get; set; }
 		public VRCFilePath CurrentAvatarImageUrl { get; set; }
-		public VRCImagePath CurrentAvatarThumbnailImageUrl { get; set; }
+		public string CurrentAvatarThumbnailImageUrl { get; set; }
 		public AvatarID FallbackAvatar { get; set; }
 		public EDeveloperType? DeveloperType { get; set; }
 		[JsonPropertyName("last_platform")]

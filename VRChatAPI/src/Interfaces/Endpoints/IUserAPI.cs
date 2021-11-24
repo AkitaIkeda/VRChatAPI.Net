@@ -17,5 +17,9 @@ namespace VRChatAPI.Interfaces
 		Task<Notification> SendFriendRequest(IUser user, CancellationToken ct = default);
 		Task<ResponseMessage> CancelFriendRequest(IUser user, CancellationToken ct = default);
 		Task<EFriendStatus> GetFriendStatus(IUser user, CancellationToken ct = default);
+		Task<CurrentUser> AddTags(IEnumerable<string> tags, CancellationToken ct = default);
+		Task<CurrentUser> AddTags(IUser user, IEnumerable<string> tags, CancellationToken ct = default);
+		Task<CurrentUser> RemoveTags(IEnumerable<string> tags, CancellationToken ct = default);
+		Task<CurrentUser> RemoveTags(IUser user, IEnumerable<string> tags, CancellationToken ct = default);
 	}
 }

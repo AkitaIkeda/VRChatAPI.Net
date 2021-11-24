@@ -11,12 +11,14 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using VRChatAPI.APIParams;
 using VRChatAPI.Enums;
 using VRChatAPI.Implementations;
 using VRChatAPI.Interfaces;
 using VRChatAPI.Objects;
 using VRChatAPI.Tests.Helper;
 using VRChatAPI.Tests.Helper.Mock;
+using VRChatAPI.Utils;
 using Xunit;
 
 namespace VRChatAPI.Tests
@@ -81,6 +83,13 @@ namespace VRChatAPI.Tests
 			(await client.Put<ResponseMessage>("https://example.com", default)).Should().BeEquivalentTo(value);
 			(await client.Post<ResponseMessage, string>("https://example.com", "test", default)).Should().BeEquivalentTo(value);
 			(await client.Put<ResponseMessage, string>("https://example.com", "test", default)).Should().BeEquivalentTo(value);
+			(await client.Get("https://example.com", default)).Content.ReadAsStringAsync().Result.Should().Be(s);
+		}
+
+		[Fact]
+		public void QueryConstructorTest(){
+			QueryConstructor.MakeQuery(new VRCFileSearchParams(), serializerOptions).Should().BeNullOrEmpty();
+			QueryConstructor.MakeQuery(new VRCFileSearchParams(){Tag="test"}, serializerOptions).Should().Be("tag=test");
 		}
 	}
 }

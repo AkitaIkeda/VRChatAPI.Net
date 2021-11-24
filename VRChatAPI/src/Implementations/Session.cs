@@ -15,12 +15,12 @@ namespace VRChatAPI.Implementations
 {
 	public partial class Session : ISession
 	{
-		private readonly APIConfig remoteConfig;
 		private readonly ILogger logger;
 		private readonly IAPIHttpClient client;
 		private readonly IWSEventHandler eventHandler;
 		private readonly IOptions<VRCAPIOptions> options;
-		private LoginInfo loginInfo;
+		private APIConfig remoteConfig;
+		private readonly LoginInfo loginInfo;
 		private JsonSerializerOptions serializerOption => options.Value.SerializerOption;
 
 		public Session(
@@ -34,11 +34,17 @@ namespace VRChatAPI.Implementations
 			this.client = client;
 			this.eventHandler = eventHandler;
 			this.options = options;
-			
-			var tr = GetAPIConfig();
-			remoteConfig = tr.Result;
+			this.loginInfo = new LoginInfo();
 
+			GetAPIConfig().ContinueWith(v => remoteConfig = v.Result);
+			
 			eventHandler.OnUserUpdate += UpdateUserInfo;
+			client.OnRequestFailedWithResponseMessage += OnRequestFailedWithResponseMessage;
+		}
+
+		private void OnRequestFailedWithResponseMessage(object sender, ResponseMessage e)
+		{
+			if(e.StatusCode == 401) loginInfo.User = null;
 		}
 
 		private void UpdateUserInfo(CurrentUser user) => loginInfo.User = user;
@@ -52,9 +58,10 @@ namespace VRChatAPI.Implementations
 		public ITokenCredential Credential => client.GetCredential();
 
 		public CurrentUser User => loginInfo.User;
-		public bool TFARequired => loginInfo.TFARequired;
+		public bool IsLoggedIn => loginInfo.TFARequired;
 
 		public APIConfig RemoteConfig => remoteConfig;
+		public LoginInfo LoginInfo => loginInfo;
 
 		public void StartWSEventHandling() => 
 			EventHandler.StartHandling(Credential);
@@ -62,8 +69,12 @@ namespace VRChatAPI.Implementations
 		public void StopWSEventHandling() => 
 			EventHandler.StopHandling();
 
-		public async Task<LoginInfo> Login(ICredential credential, CancellationToken ct = default) => 
-			loginInfo = await credential.Login(this.client, serializerOption, ct);
+		public async Task<LoginInfo> Login(ICredential credential, CancellationToken ct = default)
+		{
+			var t = await credential.Login(this.client, serializerOption, ct);
+			loginInfo.User = t.User;
+			return loginInfo;
+		} 
 
 		#endregion
 	}

@@ -32,22 +32,25 @@ namespace VRChatAPI.Implementations
 				}, serializerOption)}", ct))
 				.GetProperty("userExists").GetBoolean();
 
-		public Task<CurrentUser> GetCurrentUser(CancellationToken ct = default) =>
-			client.Get<CurrentUser>($"{authEndpoint}/{userEndpoint}", ct);
+		public async Task<CurrentUser> GetCurrentUser(CancellationToken ct = default) =>
+			loginInfo.User = await client.Get<CurrentUser>($"{authEndpoint}/{userEndpoint}", ct);
 
-		public Task<ResponseMessage> Logout(CancellationToken ct = default) =>
-			client.Put<ResponseMessage>("logout", ct);
+		public async Task<ResponseMessage> Logout(CancellationToken ct = default) 
+		{
+			var t = await client.Put<ResponseMessage>("logout", ct);
+			loginInfo.User = null;
+			return t;
+		}
 
 		public async Task<(bool Ok, ITokenCredential Token)> Verify(CancellationToken ct = default)
 		{
 			var r = await client.Get<JsonElement>($"{authEndpoint}", ct);
-			return (
+			var t = (
 				r.GetProperty("ok").GetBoolean(), 
-				new TokenCredential(
-					r.GetProperty("token").GetString(), 
-					new Uri(options.Value.APIEndpointBaseAddress)
-					)
+				new TokenCredential(r.GetProperty("token").GetString())
 				);
+			if(!t.Item1) loginInfo.User = null;
+			return t;
 		}
 
 		public async Task<bool> VerifyTwoFactorAuth(string code, CancellationToken ct = default) =>

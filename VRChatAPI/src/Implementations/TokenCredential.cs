@@ -11,34 +11,27 @@ using VRChatAPI.Utils;
 
 namespace VRChatAPI.Implementations
 {
-	internal class TokenCredential : ITokenCredential
+	[Serializable]
+	public class TokenCredential : ITokenCredential
 	{
-		private readonly Cookie _Token;
-		private readonly Cookie _TFAToken;
+		public TokenCredential(){}
 
-		public TokenCredential(string AuthToken, Uri baseAddress)
+		public TokenCredential(string AuthToken, string TFAToken = null)
 		{
-			_Token = new Cookie("auth", AuthToken, baseAddress.PathAndQuery, baseAddress.Host);
-			_TFAToken = null;
-		}
-		public TokenCredential(Cookie AuthToken, Cookie TFAToken = null)
-		{
-			if(AuthToken == null)
-				throw new ArgumentNullException(nameof(AuthToken));
-			_Token = AuthToken;
-			_TFAToken = TFAToken;
+			this.AuthToken = AuthToken;
+			this.TFAToken = TFAToken;
 		}
 
-		public string AuthToken => _Token?.Value;
+		public string AuthToken { get; set; }
 
-		public string TFAToken => _TFAToken?.Value;
+		public string TFAToken { get; set; }
 
 		public async Task<LoginInfo> Login(IAPIHttpClient session, JsonSerializerOptions option, CancellationToken ct = default)
 		{
-			var req = new HttpRequestMessage(HttpMethod.Get, "auth/user");
-			req.Headers.Add("cookie", $"{_Token.Name}={_Token.Value}");
+			session.AddCookie(new Cookie("auth", AuthToken, session.Client.BaseAddress.PathAndQuery, session.Client.BaseAddress.Host));
 			if (!(TFAToken is null))
-				req.Headers.Add("cookie", $"{_TFAToken.Name}={_TFAToken.Value}");
+				session.AddCookie(new Cookie("twoFactorAuth", TFAToken, session.Client.BaseAddress.PathAndQuery, session.Client.BaseAddress.Host));
+			var req = new HttpRequestMessage(HttpMethod.Get, "auth/user");
 			var r = await session.Send(req, ct);
 			var j = JsonSerializer.Deserialize<JsonElement>(await r.Content.ReadAsStringAsync());
 			if (!j.TryGetProperty("requiresTwoFactorAuth", out var _))

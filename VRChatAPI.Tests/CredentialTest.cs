@@ -32,21 +32,21 @@ namespace VRChatAPI.Tests{
 		[Fact]
 		public async Task TokenCredentialTest()
 		{
-			var cred = new TokenCredential("test", new System.Uri(options.Value.APIEndpointBaseAddress));
-			await LoginTest(cred, r => 
-				r.Headers.GetValues("cookie").Contains("auth=test"));
+			await LoginTest(() => new TokenCredential("test"), r => true);
+			mock.Object.CookieContainer.GetCookies(new Uri(options.Value.APIEndpointBaseAddress)).Should().Contain(c => 
+				c.Name == "auth" && c.Value == "test");
 		}
 
 		[Fact]
 		public async Task BasicAuthCredentialTest(){
-			var cred = new BasicAuthCredential("test", "pass");
-			await LoginTest(cred, r=> 
+			await LoginTest(() => new BasicAuthCredential("test", "pass"), r=> 
 				r.Headers.Authorization.Scheme == "Basic"
 				&& r.Headers.Authorization.Parameter == "dGVzdDpwYXNz");
 		}
 
-		private async Task LoginTest(ICredential cred, System.Linq.Expressions.Expression<Func<HttpRequestMessage, bool>>  f)
+		private async Task LoginTest(Func<ICredential> cred, System.Linq.Expressions.Expression<Func<HttpRequestMessage, bool>>  f)
 		{
+			mock.CallBase = true;
 			var setup = mock.Protected().Setup<Task<HttpResponseMessage>>("SendAsync",
 							ItExpr.Is<HttpRequestMessage>(f),
 							ItExpr.IsAny<CancellationToken>());
@@ -58,7 +58,7 @@ namespace VRChatAPI.Tests{
 					Content = new StringContent(@"{""requiresTwoFactorAuth"":[""totp"",""otp""]}"),
 				}));
 			
-			var r = await cred.Login(client, serializerOptions);
+			var r = await cred().Login(client, serializerOptions);
 			r.TFARequired.Should().BeTrue();
 
 			var cu = generator.GetDefaultObject(typeof(CurrentUser));
@@ -72,7 +72,7 @@ namespace VRChatAPI.Tests{
 							cu, serializerOptions)),
 				}));
 			
-			r = await cred.Login(client, serializerOptions);
+			r = await cred().Login(client, serializerOptions);
 			r.TFARequired.Should().BeFalse();
 			r.User.Should().NotBeNull().And.BeEquivalentTo(cu, 
 				c => c.ComparingByMembers<JsonElement>());

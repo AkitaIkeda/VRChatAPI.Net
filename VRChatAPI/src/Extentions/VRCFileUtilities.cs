@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -11,6 +12,8 @@ using librsync.net;
 using VRChatAPI.Enums;
 using VRChatAPI.Interfaces;
 using VRChatAPI.Objects;
+using VRChatAPI.Serialization;
+using static VRChatAPI.Utils.JsonUtilityExtensions;
 
 namespace VRChatAPI.Extentions
 {
@@ -82,14 +85,14 @@ namespace VRChatAPI.Extentions
 			var v = file.Versions.LastOrDefault();
 			if(v.Status == EUploadStatus.waiting)
 			{
-				if (v.Signature.Md5 != sigMd5 && (uploadDelta ? v.Delta.Status : v.File.Status) != EUploadStatus.waiting)
+				if (v.Signature.Md5 != sigMd5)
 				{
 					file = await session.DeleteFileVersion(file, v.Version, ct);
-					file = await session.CreateNewFileVersion(file, uploadDelta, sigMd5, sigSize, fileMd5, fileSize);
+					file = await session.CreateNewFileVersion(file, uploadDelta, fileMd5, fileSize, sigMd5, sigSize);
 				}
 			}
 			else{
-				file = await session.CreateNewFileVersion(file, uploadDelta, sigMd5, sigSize, fileMd5, fileSize);
+				file = await session.CreateNewFileVersion(file, uploadDelta, fileMd5, fileSize, sigMd5, sigSize);
 			}
 
 			try
@@ -145,14 +148,15 @@ namespace VRChatAPI.Extentions
 			string md5Base64,
 			CancellationToken ct = default)
 		{
-			var r = new HttpRequestMessage(HttpMethod.Post, url);
-			r.Content = new StreamContent(s);
-			r.Headers.Add("content-type", JsonStringFromObject(contentType, new JsonSerializerOptions{
+			var r = new HttpRequestMessage(HttpMethod.Put, url);
+			var c= new StreamContent(s);
+			c.Headers.ContentType = MediaTypeHeaderValue.Parse(JsonStringFromObject(contentType, new JsonSerializerOptions{
 				Converters = {
-					new JsonStringEnumConverter(),
+					new StringEnumConverter(),
 				}
 			}));
-			r.Headers.Add("content-md5", md5Base64);
+			c.Headers.ContentMD5 = Convert.FromBase64String(md5Base64);
+			r.Content = c;
 			var response = await session.APIHttpClient.Send(r, ct);
 			return response.Headers.ETag.Tag;
 		}
@@ -160,7 +164,5 @@ namespace VRChatAPI.Extentions
 		public static string GetMD5(this Stream s) => Convert.ToBase64String(MD5.Create().ComputeHash(s));
 		public static Stream ComputeSignature(this Stream s) => Librsync.ComputeSignature(s);
 		public static Stream ComputeDelta(this Stream s, Stream previousSignature) => Librsync.ComputeDelta(previousSignature, s);
-		private static string JsonStringFromObject<T>(T value, JsonSerializerOptions options = null) => 
-			JsonSerializer.Deserialize<string>(JsonSerializer.SerializeToUtf8Bytes(value, options), options);
 	}
 }

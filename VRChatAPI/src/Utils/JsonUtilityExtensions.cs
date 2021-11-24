@@ -16,5 +16,16 @@ namespace VRChatAPI.Utils
 			logger.LogDebug(LogEventID.Deserialize, "Deserialize from JsonElement: {0}", element);
 			return element.Deserialize<T>(options);
 		}
+		public static string JsonStringFromObject<T>(T value, JsonSerializerOptions options = null)
+		{
+			switch(value){
+				case int _:
+					return value.ToString();
+				case bool _:
+					return value.ToString().ToLowerInvariant();
+				default:
+					return JsonSerializer.Deserialize<JsonElement>(JsonSerializer.SerializeToUtf8Bytes(value, options), options).ToString();
+			}
+		}
 	}
 }

@@ -13,6 +13,7 @@ using VRChatAPI.Interfaces;
 using VRChatAPI.Logging;
 using System.Net;
 using VRChatAPI.Utils;
+using VRChatAPI.Objects;
 
 namespace VRChatAPI.Implementations
 {
@@ -20,10 +21,20 @@ namespace VRChatAPI.Implementations
 	{
 		private readonly HttpClient client;
 		private readonly HttpClientHandler handler;
+		private readonly VRCAPIDelegatingHandler delegatingHandler;
 		private readonly IOptions<VRCAPIOptions> option;
 		private readonly ILogger logger;
 
-		//public HttpClient Client => client;
+		public event EventHandler<ResponseMessage> OnRequestFailedWithResponseMessage {
+			add => delegatingHandler.OnRequestFailedWithResponseMessage += value;
+			remove => delegatingHandler.OnRequestFailedWithResponseMessage -= value;
+		}
+		public event EventHandler<HttpResponseMessage> OnRequestFailed{
+			add => delegatingHandler.OnRequestFailed += value;
+			remove => delegatingHandler.OnRequestFailed -= value;
+		}
+
+		public HttpClient Client => client;
 
 		public APIHttpClient(
 			IOptions<VRCAPIOptions> options,
@@ -33,8 +44,10 @@ namespace VRChatAPI.Implementations
 			this.option = options;
 			this.logger = (ILogger)logger ?? NullLogger.Instance;
 			this.handler = handler;
-			client = new HttpClient(new VRCAPIDelegatingHandler(handler), true);
+			delegatingHandler = new VRCAPIDelegatingHandler(handler);
+			client = new HttpClient(delegatingHandler, true);
 			client.BaseAddress = new Uri(options.Value.APIEndpointBaseAddress);
+			client.DefaultRequestHeaders.UserAgent.ParseAdd($"VRChatAPI.Net/{typeof(APIHttpClient).Assembly.GetName().Version}");
 		}
 
 		#region interface impl
@@ -94,10 +107,16 @@ namespace VRChatAPI.Implementations
 		}
 		#endregion
 
+		public void AddCookie(Cookie cookie) =>
+			handler.CookieContainer.Add(cookie);
+
+		public void AddCookie(CookieCollection collection) =>
+			handler.CookieContainer.Add(collection);
+
 		public ITokenCredential GetCredential()
 		{
 			var c = handler.CookieContainer.GetCookies(new Uri(option.Value.APIEndpointBaseAddress)).OfType<Cookie>();
-			return new TokenCredential(c.FirstOrDefault(v => v.Name == "auth"), c.FirstOrDefault(v => v.Name == "twoFactorAuth"));
+			return new TokenCredential(c.FirstOrDefault(v => v.Name == "auth")?.Value, c.FirstOrDefault(v => v.Name == "twoFactorAuth")?.Value);
 		}
 
 		public void Dispose() => client?.Dispose();

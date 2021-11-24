@@ -5,5 +5,6 @@
 		waiting,
 		complete,
 		none,
+		queued,
 	}
 }

@@ -33,5 +33,7 @@ namespace VRChatAPI.Enums
 		application_x_rsync_delta,
 		[EnumMember(Value = "application/octet-stream")]
 		application_octet_stream,
+		[EnumMember(Value = "application/x-msdownload")]
+		application_x_msdownload,
 	}
 }

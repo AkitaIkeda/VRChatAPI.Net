@@ -1,6 +1,9 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using VRChatAPI.Objects;
 
 namespace VRChatAPI.Interfaces
 {
@@ -21,6 +24,10 @@ namespace VRChatAPI.Interfaces
 		Task<TResult> Put<TResult, TContent>(string url, TContent content, CancellationToken ct);
 		Task<HttpResponseMessage> Send(HttpRequestMessage request, CancellationToken ct);
 		ITokenCredential GetCredential();
-		//HttpClient Client { get; }
+		HttpClient Client { get; }
+		event EventHandler<ResponseMessage> OnRequestFailedWithResponseMessage;
+		event EventHandler<HttpResponseMessage> OnRequestFailed;
+		void AddCookie(Cookie cookie);
+		void AddCookie(CookieCollection collection);
 	}
 }

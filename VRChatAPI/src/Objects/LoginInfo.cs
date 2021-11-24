@@ -1,9 +1,19 @@
-﻿namespace VRChatAPI.Objects
+﻿using System;
+
+namespace VRChatAPI.Objects
 {
-	public struct LoginInfo
+	public class LoginInfo
 	{
 		public bool TFARequired => User is null;
-		public CurrentUser User { get; set; }
-		internal static LoginInfo TFARequiredInfo => default;
+		private CurrentUser cu;
+		public CurrentUser User { 
+			get => cu;
+			set{
+				cu = value;
+				OnLoginStateChangedCallback?.Invoke(this, null);
+			}
+		}
+		public event EventHandler OnLoginStateChangedCallback;
+		internal static LoginInfo TFARequiredInfo => new LoginInfo();
 	}
 }
