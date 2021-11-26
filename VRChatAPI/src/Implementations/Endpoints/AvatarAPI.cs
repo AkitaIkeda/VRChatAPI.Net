@@ -29,6 +29,9 @@ namespace VRChatAPI.Implementations
 		public Task<CurrentUser> Select(IAvatar id, CancellationToken ct = default) =>
 			client.Put<CurrentUser>($"{avatarEndpoint}/{id.GetIDString()}/select", ct);
 
+		public Task<CurrentUser> SelectAsFallback(IAvatar id, CancellationToken ct = default) =>
+			client.Put<CurrentUser>($"{avatarEndpoint}/{id.GetIDString()}/selectfallback", ct);
+
 		public Task<Avatar> Update(IAvatar from, Avatar to, CancellationToken ct = default) =>
 			client.Put<Avatar, Avatar>($"{avatarEndpoint}/{from.GetIDString()}", to, ct);
 	}

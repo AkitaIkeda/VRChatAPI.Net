@@ -11,5 +11,6 @@ namespace VRChatAPI.Interfaces
 		IUpdate<IAvatar, Avatar>, IDelete<Avatar, IAvatar>
 	{
 		Task<CurrentUser> Select(IAvatar id, CancellationToken ct = default);
+		Task<CurrentUser> SelectAsFallback(IAvatar id, CancellationToken ct = default);
 	}
 }
