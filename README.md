@@ -1,3 +1,6 @@
+# IMPORTANT
+This Repo is **OUTDATED**
+
 # VRChatAPI.Net
 
 VRChat API Wrapper for dotnet written in .Net Standard 2.0
